@@ -1,9 +1,20 @@
-shiny
-shinywidgets
-plotly
+# Core data science packages
+numpy
 pandas
 scipy
+plotly
+kaleido
+
+# Shiny app framework
+shiny
+shinywidgets
+
+# Database and API connection
 supabase
 python-dotenv
+
+# Export functionality
 openpyxl
-kaleido
+
+# Deployment
+rsconnect-python

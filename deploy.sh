@@ -1,0 +1,2 @@
+rsconnect add --account koefisien-restitusi-iot --name koefisien-restitusi-iot --token 1C7986D30364691EB2DF1E5A0D9FE699 --secret kmhzKzcDAj8z+1FTxW+E/mDh7D/eqReHEtyX5eeT
+rsconnect deploy shiny . --name koefisien-restitusi-iot --title koefisien-restitusi-iot-app

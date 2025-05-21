@@ -2,17 +2,57 @@
 
 Aplikasi untuk menghitung koefisien restitusi menggunakan sensor ultrasonic dan IoT.
 
+## Link Penting
+
+### Aplikasi
+- [Website Koefisien Restitusi IOT](https://koefisien-restitusi-iot.shinyapps.io/koefisien-restitusi-app1/)
+
+### Development
+- [Shinyapps Hosting](https://www.shinyapps.io/)
+- [Supabase Dashboard](https://supabase.com/dashboard/project/)
+
+## Preview
+
+![Preview Aplikasi](https://github.com/Ajitot/KoefisienRestitusiIOTApp/assets/105025628/c1e33e2d-33b1-455a-ac37-2abdeead9a54)
 
 ## Diagram
 
-![](images\circuit_diagram.png)
+![](images/circuit_diagram.png)
 
 | Ultrasonic Sensor | ESP8266 |
 |-------------------|---------|
 | VCC               | VIN     |
-| Trig              | (D14) |
-| Echo              | (D27) |
+| Trig              | (D14)   |
+| Echo              | (D27)   |
 | GND               | GND     |
+
+## Hardware Setup
+
+### Pinout Diagram
+
+![Pinout Diagram](images/ESP32-DOIT-DEVKIT-V1-Board-Pinout-36-GPIOs-updated.webp)
+
+## Supabase Setup
+
+Buat tabel dengan struktur berikut di Supabase:
+
+| Name       | Description        | Data Type                  | Format    |
+|------------|--------------------|----------------------------|-----------|
+| id         | Primary key        | bigint                     | int8      |
+| created_at | Waktu dibuat       | time without time zone     | time      |
+| datetime   | Waktu pengukuran   | timestamp without time zone| timestamp |
+| High       | Tinggi pantulan    | real                       | float4    |
+
+### Sintaks SQL untuk membuat Tabel
+
+```sql
+CREATE TABLE maintable (
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    created_at time without time zone DEFAULT CURRENT_TIME,
+    datetime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    High real NOT NULL
+);
+```
 
 ## Cara Penggunaan
 
@@ -68,44 +108,32 @@ shiny run --reload --launch-browser app.py
 deactivate
 ```
 
-## Supabase Setup
+## Deployment ke Shinyapps.io
 
-Buat tabel dengan struktur berikut di Supabase:
+1. Daftar akun di [shinyapps.io](https://www.shinyapps.io/)
 
-| Name       | Description        | Data Type                  | Format    |
-|------------|--------------------|----------------------------|-----------|
-| id         | Primary key        | bigint                     | int8      |
-| created_at | Waktu dibuat       | time without time zone     | time      |
-| datetime   | Waktu pengukuran   | timestamp without time zone| timestamp |
-| High       | Tinggi pantulan    | real                       | float4    |
-
-### Sintaks SQL untuk membuat Tabel
-
-```sql
-CREATE TABLE maintable (
-    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    created_at time without time zone DEFAULT CURRENT_TIME,
-    datetime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    High real NOT NULL
-);
+2. Install rsconnect package
+```bash
+pip install rsconnect-python
 ```
 
+3. Setup rsconnect
+```bash
+# Dapatkan token dari shinyapps.io dashboard > Account > Tokens
+rsconnect add --name <ACCOUNT_NAME> --token <TOKEN> --secret <SECRET>
+```
 
-## Hardware Setup
+4. Deploy aplikasi
+```bash
+rsconnect deploy shiny . --name <ACCOUNT_NAME> --title "Koefisien Restitusi App"
+```
 
-### Pinout Diagram
+5. Setelah deployment, aplikasi dapat diakses di URL yang diberikan
 
-![Pinout Diagram](images/Pinout.png)
+### Troubleshooting Deployment
 
-## Link Penting
+- Pastikan file `requirements.txt` mencakup semua dependensi
+- Periksa file `.rsconnect` dalam gitignore
+- Untuk aplikasi dengan kredensial, gunakan secrets management shinyapps.io
 
-### Aplikasi
-- [Website Koefisien Restitusi IOT](https://koefisien-restitusi-iot.shinyapps.io/koefisien-restitusi-app1/)
 
-### Development
-- [Shinyapps Hosting](https://www.shinyapps.io/)
-- [Supabase Dashboard](https://supabase.com/dashboard/project/)
-
-## Preview
-
-![Preview Aplikasi](https://github.com/Ajitot/KoefisienRestitusiIOTApp/assets/105025628/c1e33e2d-33b1-455a-ac37-2abdeead9a54)
