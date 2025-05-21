@@ -1,0 +1,23 @@
+# Python related
+# venv/
+env/
+__pycache__/
+# .env
+
+# Debug logs
+*.log
+
+# IDE and editor folders
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Local configuration
+*.env.local
+
+# Database
+*.sqlite
+*.db
