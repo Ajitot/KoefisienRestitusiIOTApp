@@ -1,36 +1,23 @@
 #ifdef ESP32
   #include <WiFi.h>
-  #include <WebServer.h>
-  #include <WebSocketsServer.h>
+  #define LED_BUILTIN 2
 #elif defined(ESP8266)
   #include <ESP8266WiFi.h>
-  #include <ESP8266WebServer.h>
-  #include <WebSocketsServer.h>
 #endif
 
 #include <PubSubClient.h>
-#include <vector>
-#include <ArduinoJson.h>
-#include "webserver.h"
+#include <ArduinoJson.h>  // Tambahkan untuk JSON yang proper
 
 // Update these with values suitable for your network.
-
 const char* ssid = "Al muajir";
 const char* password = "1618199923";
+
 // **MQTT Broker Cloud**
-const char* mqtt_server = "broker.mqtt-dashboard.com";
-// **MQTT Broker Local**
+const char* mqtt_server = "broker.hivemq.com";
 const int mqtt_port = 1883;
 
-#ifdef ESP32
-  const char* mqtt_topic = "esp32/hcsr04";
-  WebServer server(80);
-#elif defined(ESP8266)
-  const char* mqtt_topic = "esp8266/hcsr04";
-  ESP8266WebServer server(80);
-#endif
-
-WebSocketsServer webSocket = WebSocketsServer(81);
+const char* mqtt_topic = "sensor/distance";
+const char* mqtt_cmd_topic = "sensor/distance/cmd";  // Tambah topik untuk command
 
 // HC-SR04 sensor pins
 #ifdef ESP32
@@ -46,55 +33,28 @@ PubSubClient client(espClient);
 unsigned long lastSensorRead = 0;
 unsigned long lastMqttReconnect = 0;
 unsigned long lastWifiCheck = 0;
-#define MSG_BUFFER_SIZE	(100)
-char msg[MSG_BUFFER_SIZE];
+unsigned long program_start_time = 0;  // Tambah untuk timestamp
 
-// Data storage and control variables
-std::vector<String> sensorData;
 bool isReading = false;
-unsigned long startTime = 0;
-String currentExperiment = "Percobaan 1";
-unsigned long sensorInterval = 50; // 50ms = 20Hz sampling rate
+unsigned long sensorInterval = 100; // PERBAIKAN: Ubah ke 100ms untuk realtime
 
-// Non-blocking HC-SR04 functions
-long readDistanceNonBlocking() {
-  static unsigned long triggerTime = 0;
-  static bool triggerSent = false;
-  static unsigned long pulseStart = 0;
-  static bool pulseStarted = false;
+// Improved HC-SR04 reading dengan filtering
+long readDistance() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
   
-  if (!triggerSent) {
-    digitalWrite(TRIG_PIN, LOW);
-    delayMicroseconds(2);
-    digitalWrite(TRIG_PIN, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(TRIG_PIN, LOW);
-    triggerSent = true;
-    triggerTime = micros();
-    pulseStarted = false;
-    return -1; // Not ready yet
-  }
+  long duration = pulseIn(ECHO_PIN, HIGH, 30000); // Timeout 30ms
+  if (duration == 0) return -1; // Timeout
   
-  if (digitalRead(ECHO_PIN) == HIGH && !pulseStarted) {
-    pulseStart = micros();
-    pulseStarted = true;
-    return -1; // Still measuring
-  }
+  long distance = duration * 0.034 / 2;
   
-  if (digitalRead(ECHO_PIN) == LOW && pulseStarted) {
-    unsigned long duration = micros() - pulseStart;
-    long distance = duration * 0.034 / 2;
-    triggerSent = false; // Reset for next measurement
-    return distance;
-  }
+  // Filter invalid readings
+  if (distance < 2 || distance > 400) return -1;
   
-  // Timeout after 30ms
-  if (micros() - triggerTime > 30000) {
-    triggerSent = false;
-    return 0; // Timeout
-  }
-  
-  return -1; // Still waiting
+  return distance;
 }
 
 void setup_wifi() {
@@ -121,7 +81,7 @@ void setup_wifi() {
 
 void checkWifiConnection() {
   unsigned long now = millis();
-  if (now - lastWifiCheck > 10000) { // Check every 10 seconds
+  if (now - lastWifiCheck > 10000) {
     lastWifiCheck = now;
     if (WiFi.status() != WL_CONNECTED) {
       Serial.println("WiFi disconnected, reconnecting...");
@@ -135,7 +95,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
   Serial.print("] ");
   
-  // Convert payload to string
   String message = "";
   for (unsigned int i = 0; i < length; i++) {
     message += (char)payload[i];
@@ -145,20 +104,41 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // Handle commands
   if (message == "READ_DISTANCE") {
-    long distance = readDistanceNonBlocking();
-    if (distance >= 0) {
-      snprintf(msg, MSG_BUFFER_SIZE, "Distance: %ld cm", distance);
-      client.publish(mqtt_topic, msg);
-      Serial.println("Distance reading requested and sent");
+    long distance = readDistance();
+    if (distance > 0) {
+      // PERBAIKAN: Kirim dengan format JSON yang proper
+      JsonDocument doc;
+      doc["timestamp"] = (millis() - program_start_time) / 1000.0;
+      doc["distance"] = distance;
+      doc["device"] = "ESP8266_HCSR04";
+      doc["command_response"] = true;
+      
+      String jsonString;
+      serializeJson(doc, jsonString);
+      client.publish(mqtt_topic, jsonString.c_str());
     }
   }
-  // Switch on the LED if an 1 was received as first character
+  else if (message == "START_READING") {
+    isReading = true;
+    Serial.println("Started continuous reading");
+  }
+  else if (message == "STOP_READING") {
+    isReading = false;
+    Serial.println("Stopped continuous reading");
+  }
+  else if (message.startsWith("INTERVAL:")) {
+    // Command untuk ubah interval: "INTERVAL:100"
+    int newInterval = message.substring(9).toInt();
+    if (newInterval >= 50 && newInterval <= 5000) {
+      sensorInterval = newInterval;
+      Serial.println("Interval changed to: " + String(newInterval) + "ms");
+    }
+  }
   else if ((char)payload[0] == '1') {
     digitalWrite(LED_BUILTIN, LOW);
   } else {
     digitalWrite(LED_BUILTIN, HIGH);
   }
-
 }
 
 void reconnectMQTT() {
@@ -166,41 +146,36 @@ void reconnectMQTT() {
   if (!client.connected() && (now - lastMqttReconnect > 5000)) {
     lastMqttReconnect = now;
     Serial.print("Attempting MQTT connection...");
-    String clientId = "ESP8266Client-";
+    
+    #ifdef ESP32
+      String clientId = "ESP32Client-";
+    #elif defined(ESP8266)
+      String clientId = "ESP8266Client-";
+    #endif
     clientId += String(random(0xffff), HEX);
     
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      client.publish(mqtt_topic, "Device connected");
+      
+      // PERBAIKAN: Send connection message dengan JSON
+      JsonDocument doc;
+      doc["timestamp"] = (millis() - program_start_time) / 1000.0;
+      doc["message"] = "Device connected";
+      doc["device"] = clientId;
+      doc["status"] = "online";
+      
+      String jsonString;
+      serializeJson(doc, jsonString);
+      client.publish(mqtt_topic, jsonString.c_str());
+      
+      // Subscribe ke kedua topik: data dan command
       client.subscribe(mqtt_topic);
+      client.subscribe(mqtt_cmd_topic);
+      Serial.println("Subscribed to data and command topics");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
     }
-  }
-}
-
-void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
-  switch(type) {
-    case WStype_DISCONNECTED:
-      Serial.printf("[%u] Disconnected!\n", num);
-      break;
-    case WStype_CONNECTED:
-      Serial.printf("[%u] Connected from IP: %s\n", num, webSocket.remoteIP(num).toString().c_str());
-      break;
-    case WStype_TEXT:
-      Serial.printf("[%u] Received: %s\n", num, payload);
-      break;
-    case WStype_FRAGMENT_TEXT_START:
-    case WStype_FRAGMENT_BIN_START:
-    case WStype_FRAGMENT:
-    case WStype_FRAGMENT_FIN:
-    case WStype_BIN:
-    case WStype_ERROR:
-    case WStype_PING:
-    case WStype_PONG:
-      // Handle other cases silently
-      break;
   }
 }
 
@@ -210,27 +185,19 @@ void setup() {
   pinMode(ECHO_PIN, INPUT);
   Serial.begin(115200);
   
-  // Wait for WiFi connection first
+  // PERBAIKAN: Catat waktu mulai program
+  program_start_time = millis();
+  
   setup_wifi();
   
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
   
-  // Setup WebSocket after WiFi is connected
-  webSocket.begin();
-  webSocket.onEvent(webSocketEvent);
-  
-  // Setup web server after WiFi is connected
-  setupWebServer();
-  
-  randomSeed(micros());
   Serial.println("System initialized");
+  Serial.println("Program start time: " + String(program_start_time));
 }
 
 void loop() {
-  // Handle all services non-blocking
-  server.handleClient();
-  webSocket.loop();
   client.loop();
   
   checkWifiConnection();
@@ -238,37 +205,32 @@ void loop() {
   
   unsigned long now = millis();
   
-  // Non-blocking sensor reading
+  // PERBAIKAN: Sensor reading dengan JSON proper
   if (isReading && (now - lastSensorRead >= sensorInterval)) {
-    long distance = readDistanceNonBlocking();
+    lastSensorRead = now;
     
-    if (distance >= 0) { // Valid reading
-      lastSensorRead = now;
-      
-      // Store data with millisecond precision
-      float timestamp = (float)(now - startTime) / 1000.0;
-      String dataEntry = String(timestamp, 3) + "," + String(distance) + ",cm," + currentExperiment;
-      sensorData.push_back(dataEntry);
-      
-      // Send to WebSocket clients
+    long distance = readDistance();
+    
+    if (distance > 0 && client.connected()) {
+      // PERBAIKAN: Format JSON yang sesuai dengan Python
       JsonDocument doc;
-      doc["timestamp"] = timestamp;
+      doc["timestamp"] = (now - program_start_time) / 1000.0;
       doc["distance"] = distance;
-      doc["experiment"] = currentExperiment;
+      doc["device"] = "ESP8266_HCSR04";
+      doc["uptime"] = now;
+      
       String jsonString;
       serializeJson(doc, jsonString);
-      webSocket.broadcastTXT(jsonString);
       
-      // MQTT publish (non-blocking)
-      if (client.connected()) {
-        snprintf(msg, MSG_BUFFER_SIZE, "{\"distance\":%ld,\"timestamp\":%.3f,\"experiment\":\"%s\"}", 
-                 distance, timestamp, currentExperiment.c_str());
-        client.publish(mqtt_topic, msg);
+      if (client.publish(mqtt_topic, jsonString.c_str())) {
+        Serial.println("Published: " + jsonString);
+      } else {
+        Serial.println("Failed to publish");
       }
-      
-      Serial.printf("Distance: %ld cm, Time: %.3f s\n", distance, timestamp);
+    } else if (distance <= 0) {
+      Serial.println("Invalid distance reading");
     }
   }
   
-  yield(); // Allow ESP8266 background tasks
+  yield();
 }

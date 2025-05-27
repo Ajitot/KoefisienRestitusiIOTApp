@@ -1,221 +1,210 @@
-# KoefisienRestitusiIOTApp
+# Koefisien Restitusi IoT Application
 
-![Web Interface Screenshot](images/Screenshot_26-5-2025_16425_192.168.1.12.jpeg)
+Aplikasi IoT untuk mengukur koefisien restitusi bola menggunakan sensor ultrasonik HC-SR04 dengan ESP8266/ESP32 dan interface Python GUI.
 
-Aplikasi IoT untuk mengukur koefisien restitusi menggunakan sensor HC-SR04 dan ESP8266/ESP32 dengan komunikasi MQTT dan Web Server real-time.
+![Koefisien Restitusi IoT](images/image.png)
 
-## ✨ Fitur Utama
-- 📊 **Real-time Data Logging** - Monitoring data sensor secara langsung
-- 🌐 **Web Interface** - Antarmuka web dengan grafik dan tabel interaktif
-- 📱 **Responsive Design** - Dapat diakses dari PC, tablet, atau smartphone
-- 📈 **Live Chart** - Grafik real-time dengan Chart.js
-- 💾 **Export CSV** - Download data dengan nama file sesuai percobaan
-- 🔧 **Configurable Sampling** - Atur interval sampling dari 10ms-1000ms
-- 🔄 **MQTT Support** - Komunikasi IoT dengan protokol MQTT
-- ⚡ **Non-blocking Operation** - Operasi asynchronous tanpa delay
-- 🔍 **Dual View Mode** - Toggle antara tampilan real-time dan semua data
-- 📊 **Interactive Chart** - Visualisasi data dengan Chart.js yang responsif
+## Deskripsi
 
-## 🖼️ Tampilan Interface
+Sistem ini mengukur koefisien restitusi (coefficient of restitution) dengan cara:
+1. Mendeteksi jarak bola yang memantul menggunakan sensor HC-SR04
+2. Mengirim data secara real-time melalui MQTT
+3. Menganalisis data bouncing untuk menghitung koefisien restitusi
+4. Menampilkan grafik dan hasil perhitungan di aplikasi Python
 
-Interface web menampilkan:
-- **Panel Kontrol** - Pengaturan nama percobaan dan interval sampling
-- **Status Monitor** - Real-time status sistem dan jumlah data
-- **Grafik Interaktif** - Plot jarak vs waktu dengan mode real-time dan tampilan semua data
-- **Tabel Data** - Tampilan data terbaru dalam format tabel
-- **Tombol Kontrol** - Start, Stop, Download CSV, Clear Data, dan toggle view
+## Alat dan Bahan
 
-## 🔧 Komponen yang Diperlukan
-- ESP8266/ESP32 Development Board
-- Sensor HC-SR04 (Ultrasonic Distance Sensor)
-- Kabel jumper male-to-male
-- Breadboard (opsional)
-- LED built-in (sudah tersedia di board)
+### Hardware
+- **ESP8266** (NodeMCU/Wemos D1) atau **ESP32**
+- **Sensor HC-SR04** (ultrasonik distance sensor)
+- **Breadboard** dan **kabel jumper**
+- **Bola** untuk testing (ping pong ball, rubber ball, dll)
+- **Power supply** untuk ESP (USB cable)
 
-## 🔌 Koneksi Hardware
+### Software
+- **Arduino IDE** atau **PlatformIO** untuk programming ESP
+- **Python 3.7+** dengan libraries:
+  - `tkinter` (GUI)
+  - `matplotlib` (plotting)
+  - `pandas` (data processing)
+  - `scipy` (signal processing)
+  - `paho-mqtt` (MQTT client)
+  - `numpy` (numerical computing)
+  - `json` (data parsing)
 
-### ESP8266 (NodeMCU/Wemos D1)
+### Koneksi Hardware
+
+#### ESP8266 (NodeMCU)
 ```
-HC-SR04    →    ESP8266
-VCC        →    3.3V atau 5V
-GND        →    GND
-TRIG       →    D1 (GPIO5)
-ECHO       →    D2 (GPIO4)
-```
-
-### ESP32
-```
-HC-SR04    →    ESP32
-VCC        →    3.3V atau 5V
-GND        →    GND
-TRIG       →    GPIO14
-ECHO       →    GPIO27
+HC-SR04    NodeMCU
+VCC   →    3.3V/5V
+GND   →    GND
+Trig  →    D1 (GPIO5)
+Echo  →    D2 (GPIO4)
 ```
 
-## 📚 Library yang Diperlukan
-Install library berikut di Arduino IDE:
-- **PubSubClient** - untuk komunikasi MQTT
-- **ArduinoJson** - untuk parsing JSON
-- **WebSocketsServer** - untuk komunikasi WebSocket real-time
-- **ESP8266WebServer** (untuk ESP8266) atau **WebServer** (untuk ESP32)
-
-## 🚀 Langkah Instalasi
-
-### 1. Persiapan Arduino IDE
-```bash
-# Install ESP8266/ESP32 board package
-# File → Preferences → Additional Board Manager URLs:
-# ESP8266: http://arduino.esp8266.com/stable/package_esp8266com_index.json
-# ESP32: https://dl.espressif.com/dl/package_esp32_index.json
+#### ESP32
+```
+HC-SR04    ESP32
+VCC   →    3.3V/5V
+GND   →    GND
+Trig  →    GPIO14
+Echo  →    GPIO27
 ```
 
-### 2. Konfigurasi WiFi
-Edit file `main.cpp`:
-```cpp
-const char* ssid = "NAMA_WIFI_ANDA";
-const char* password = "PASSWORD_WIFI_ANDA";
-```
+## Struktur Kode
 
-### 3. Upload Program
-- Pilih board yang sesuai (ESP8266/ESP32)
-- Pilih port COM yang benar
-- Upload program ke microcontroller
-
-## 🖥️ Penggunaan Web Interface
-
-### 1. Akses Web Server
-Setelah upload berhasil, buka Serial Monitor untuk melihat IP address:
-```
-WiFi connected
-IP address: 192.168.1.100
-Web server started
-Access at: http://192.168.1.100
-WebSocket server at: ws://192.168.1.100:81
-```
-
-### 2. Kontrol Panel
-**Pengaturan Percobaan:**
-- Masukkan nama percobaan (contoh: "Percobaan Bola Basket")
-- Klik "Set" untuk menyimpan
-
-**Pengaturan Sampling:**
-- Atur interval sampling 10-1000ms (default: 50ms = 20Hz)
-- Semakin kecil interval, semakin detail data yang diperoleh
-
-**Kontrol Data:**
-- **START** - Mulai pengambilan data
-- **STOP** - Hentikan pengambilan data
-- **DOWNLOAD CSV** - Unduh data dalam format CSV
-- **CLEAR DATA** - Hapus semua data
-- **SHOW ALL DATA** - Toggle antara tampilan real-time dan semua data
-
-### 3. Monitoring Real-time
-- **Grafik**: Menampilkan data jarak vs waktu secara real-time
-- **Tabel**: Menampilkan 10 data terakhir
-- **Status**: Informasi status sistem, jumlah data, dan nama percobaan
-
-## 📊 Format Data Output
-
-### CSV Export
-```csv
-Timestamp(s),Distance(cm),Unit,Experiment
-0.000,25,cm,Percobaan Bola Basket
-0.050,24,cm,Percobaan Bola Basket
-0.100,23,cm,Percobaan Bola Basket
-```
-
-### MQTT Message
-```json
-{
-  "distance": 25,
-  "timestamp": 1.250,
-  "experiment": "Percobaan Bola Basket"
-}
-```
-
-### WebSocket Real-time
-```json
-{
-  "timestamp": 1.250,
-  "distance": 25,
-  "experiment": "Percobaan Bola Basket"
-}
-```
-
-## 🌐 MQTT Configuration
-
-### Broker Settings
-- **Broker**: `broker.mqtt-dashboard.com`
-- **Port**: `1883`
-- **Topic ESP8266**: `esp8266/hcsr04`
-- **Topic ESP32**: `esp32/hcsr04`
-
-### Remote Commands
-Kirim pesan ke topic untuk kontrol remote:
-- `"READ_DISTANCE"` - Baca jarak sensor sekali
-- `"1"` - Nyalakan LED built-in
-- `"0"` - Matikan LED built-in
-
-## 🔬 Aplikasi untuk Koefisien Restitusi
-
-### Cara Pengukuran
-1. Set nama percobaan (misal: "Bola Basket - Tinggi 100cm")
-2. Posisikan sensor di bawah area jatuh bola
-3. Klik START sebelum menjatuhkan bola
-4. Jatuhkan bola dari ketinggian tertentu
-5. Klik STOP setelah bola berhenti memantul
-6. Download data CSV untuk analisis
-
-### Analisis Data
-Data yang diperoleh dapat digunakan untuk:
-- Menghitung tinggi pantulan maksimum
-- Menentukan koefisien restitusi (e = √(h₂/h₁))
-- Analisis energi kinetik dan potensial
-- Studi karakteristik material bola
-
-## 🛠️ Troubleshooting
-
-### Masalah Koneksi WiFi
-```
-Connecting to WiFi...
-......................
-```
-- Periksa SSID dan password WiFi
-- Pastikan ESP dalam jangkauan WiFi
-- Restart ESP jika diperlukan
-
-### Sensor Tidak Terbaca
-- Periksa koneksi kabel TRIG dan ECHO
-- Pastikan sensor mendapat daya 5V
-- Jarak objek harus dalam range 2cm-400cm
-
-### Web Server Tidak Dapat Diakses
-- Periksa IP address di Serial Monitor
-- Pastikan ESP dan device dalam satu jaringan
-- Disable firewall jika diperlukan
-
-## 📁 Struktur File
 ```
 KoefisienRestitusiIOTApp/
 ├── src/
-│   ├── main.cpp          # Program utama
-│   └── webserver.h       # Web server dan HTML interface
-├── README.md             # Dokumentasi
-└── platformio.ini        # Konfigurasi PlatformIO (opsional)
+│   └── main.cpp              # Kode ESP8266/ESP32
+├── python/
+│   └── main.py              # Aplikasi Python GUI
+└── readme.md                # Dokumentasi ini
 ```
 
-## 🤝 Kontribusi
-Kontribusi sangat diterima! Silakan:
-1. Fork repository ini
-2. Buat branch fitur baru
-3. Commit perubahan
-4. Submit pull request
+### File: `src/main.cpp`
 
-## 📄 Lisensi
-Project ini menggunakan lisensi MIT. Lihat file LICENSE untuk detail.
+**Fungsi Utama:**
+- **WiFi Connection**: Menghubungkan ESP ke WiFi
+- **MQTT Client**: Komunikasi dengan broker MQTT (broker.hivemq.com)
+- **HC-SR04 Reading**: Membaca jarak dari sensor ultrasonik
+- **JSON Publishing**: Mengirim data dalam format JSON
+- **Command Processing**: Menerima perintah dari aplikasi Python
 
-## 👨‍💻 Pengembang
-Dibuat untuk keperluan penelitian dan edukasi IoT serta fisika eksperimental.
+**Topik MQTT:**
+- `sensor/distance` - untuk publish data sensor
+- `sensor/distance/cmd` - untuk menerima command dari Python
 
----
-**Made with ❤️ for IoT Education**
+**Commands yang didukung:**
+- `START_READING` - Mulai pembacaan sensor
+- `STOP_READING` - Berhenti pembacaan sensor  
+- `READ_DISTANCE` - Baca jarak sekali
+- `INTERVAL:xxx` - Set interval pembacaan (ms)
+
+### File: `python/main.py`
+
+**Komponen Utama:**
+- **MQTT Client**: Menerima data dari ESP via MQTT
+- **GUI Interface**: Tkinter-based interface dengan kontrol
+- **Real-time Plotting**: Matplotlib untuk grafik real-time
+- **Signal Processing**: Filter dan deteksi bounce menggunakan scipy
+- **Data Export**: Save ke Excel/CSV dan plot ke PNG/PDF
+
+**Fitur GUI:**
+- Start/Stop data collection
+- Real-time distance plotting
+- Bounce detection dengan peak marking
+- Koefisien restitusi calculation
+- Data export (Excel, PNG)
+- ESP remote control
+
+## Cara Kerja Sistem
+
+### 1. Setup Hardware
+1. Hubungkan HC-SR04 ke ESP sesuai diagram koneksi
+2. Upload kode `main.cpp` ke ESP menggunakan Arduino IDE
+3. Pastikan ESP terhubung ke WiFi yang sama dengan komputer
+
+### 2. Setup Software
+```bash
+# Install Python dependencies
+pip install tkinter matplotlib pandas scipy paho-mqtt numpy
+```
+
+### 3. Menjalankan Aplikasi
+1. **Jalankan ESP**: Power on ESP, tunggu hingga connect ke WiFi
+2. **Jalankan Python**: 
+   ```bash
+   cd python
+   python main.py
+   ```
+3. **Monitor Connection**: Pastikan status "Connected to MQTT" di aplikasi
+
+### 4. Pengukuran Koefisien Restitusi
+
+#### Langkah Pengukuran:
+1. **Posisikan Setup**: 
+   - Letakkan sensor HC-SR04 menghadap ke area bouncing
+   - Pastikan bola akan memantul di area deteksi sensor (2-400 cm)
+
+2. **Start Collection**:
+   - Klik tombol "Start" di aplikasi Python
+   - ESP akan mulai mengirim data real-time
+
+3. **Drop Ball**:
+   - Jatuhkan bola dari ketinggian tertentu
+   - Biarkan bola memantul beberapa kali
+   - Grafik akan menampilkan pola bouncing secara real-time
+
+4. **Analisis**:
+   - Setelah cukup data, klik "Calculate Coefficient"
+   - Aplikasi akan mendeteksi bounce peaks
+   - Menghitung koefisien restitusi: e = √(h₂/h₁)
+
+#### Formula Koefisien Restitusi:
+```
+e = √(h_after / h_before)
+```
+Dimana:
+- `e` = koefisien restitusi (0-1)
+- `h_after` = tinggi bounce setelah
+- `h_before` = tinggi bounce sebelum
+
+### 5. Kontrol Remote ESP
+- **Start ESP Reading**: Mulai sensor reading di ESP
+- **Stop ESP Reading**: Stop sensor reading di ESP  
+- **Request Distance**: Minta satu kali pembacaan
+- **Set Interval**: Ubah interval pembacaan (50-5000ms)
+
+## Fitur Signal Processing
+
+### Low-pass Filter
+- **Cutoff**: 5 Hz
+- **Order**: 4th order Butterworth
+- **Purpose**: Mengurangi noise pada data jarak
+
+### Bounce Detection
+- **Method**: Peak detection pada sinyal terbalik
+- **Parameters**: 
+  - Minimum height: 5 cm
+  - Minimum distance: 10 samples
+- **Output**: Koordinat bounce points
+
+### Coefficient Calculation
+- **Input**: Sequence of bounce heights
+- **Method**: Rasio akar kuadrat tinggi bounce berturut-turut
+- **Output**: Individual dan average coefficient
+
+## Troubleshooting
+
+### ESP Connection Issues
+```cpp
+// Check Serial Monitor untuk:
+- WiFi connection status
+- MQTT connection status  
+- Published messages
+```
+
+### Python MQTT Issues
+```python
+# Check console output untuk:
+- "Connected to MQTT Broker!"
+- "Subscribed to: sensor/distance"
+- Received JSON messages
+```
+
+### Data Quality Issues
+- **Noisy Data**: Increase low-pass filter cutoff
+- **No Bounces Detected**: Adjust detection parameters
+- **Invalid Readings**: Check sensor positioning dan range
+
+## Tutorial References
+
+[How to Publish DHT11 Sensor Data from NodeMCU to Mosquitto MQTT Broker over LAN | NodeMCU | MQTT |](https://www.youtube.com/watch?v=5rHWeV0dwxo)
+
+[Netsh Port Forwarding from LAN IP(192.168.xx.xx)-Port(1883) to Local IP(127.0.0.1)-Port(1883) for Mosquitto MQTT Broker](https://fusion-automate.blogspot.com/2023/05/netsh-port-forwarding-from-lan.html)
+
+## License
+
+Open source - feel free to modify and distribute.

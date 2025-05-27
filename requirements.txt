@@ -1,0 +1,7 @@
+tk
+matplotlib
+pandas
+scipy
+paho-mqtt
+numpy
+openpyxl
