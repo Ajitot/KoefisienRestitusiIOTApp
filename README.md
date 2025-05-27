@@ -99,82 +99,204 @@ KoefisienRestitusiIOTApp/
 - Data export (Excel, PNG)
 - ESP remote control
 
-## Cara Kerja Sistem
+#### Struktur dan Alur Kode Python
 
-### 1. Setup Hardware
-1. Hubungkan HC-SR04 ke ESP sesuai diagram koneksi
-2. Upload kode `main.cpp` ke ESP menggunakan Arduino IDE
-3. Pastikan ESP terhubung ke WiFi yang sama dengan komputer
+##### 1. **Global Variables dan Konfigurasi**
+```python
+# Data storage
+time_data = []          # Menyimpan timestamp
+distance_data = []      # Menyimpan tinggi bola (sensor_height - raw_distance)
+collecting = False      # Status pengumpulan data
+sensor_height = 35      # Tinggi sensor dari lantai (cm)
 
-### 2. Setup Software
-```bash
-# Install Python dependencies
-pip install tkinter matplotlib pandas scipy paho-mqtt numpy
+# MQTT Configuration
+MQTT_BROKER = "broker.hivemq.com"
+MQTT_TOPIC = "sensor/distance"
 ```
 
-### 3. Menjalankan Aplikasi
-1. **Jalankan ESP**: Power on ESP, tunggu hingga connect ke WiFi
-2. **Jalankan Python**: 
-   ```bash
-   cd python
-   python main.py
-   ```
-3. **Monitor Connection**: Pastikan status "Connected to MQTT" di aplikasi
+##### 2. **Fungsi Signal Processing**
 
-### 4. Pengukuran Koefisien Restitusi
-
-#### Langkah Pengukuran:
-1. **Posisikan Setup**: 
-   - Letakkan sensor HC-SR04 menghadap ke area bouncing
-   - Pastikan bola akan memantul di area deteksi sensor (2-400 cm)
-
-2. **Start Collection**:
-   - Klik tombol "Start" di aplikasi Python
-   - ESP akan mulai mengirim data real-time
-
-3. **Drop Ball**:
-   - Jatuhkan bola dari ketinggian tertentu
-   - Biarkan bola memantul beberapa kali
-   - Grafik akan menampilkan pola bouncing secara real-time
-
-4. **Analisis**:
-   - Setelah cukup data, klik "Calculate Coefficient"
-   - Aplikasi akan mendeteksi bounce peaks
-   - Menghitung koefisien restitusi: e = √(h₂/h₁)
-
-#### Formula Koefisien Restitusi:
+**`lowpass_filter(data, cutoff=5, fs=20, order=4)`**
+- **Tujuan**: Menghaluskan data untuk mengurangi noise
+- **Input**: Array data mentah, parameter filter
+- **Output**: Data yang sudah difilter
+- **Algoritma**: Butterworth low-pass filter menggunakan scipy
+```python
+# Menerapkan filter hanya jika data cukup (>20 points)
+# Menggunakan filtfilt untuk zero-phase filtering
 ```
-e = √(h_after / h_before)
+
+**`detect_bounces(distance_data, time_data, min_height=5, min_distance=10)`**
+- **Tujuan**: Mendeteksi titik pantulan bola
+- **Input**: Data tinggi bola dan waktu
+- **Output**: Koordinat bounce points (waktu, tinggi)
+- **Algoritma**: Peak detection pada sinyal terbalik
+```python
+# Membalik sinyal (negatif) untuk deteksi minimum sebagai peak
+# Menggunakan scipy.signal.find_peaks dengan parameter threshold
 ```
-Dimana:
-- `e` = koefisien restitusi (0-1)
-- `h_after` = tinggi bounce setelah
-- `h_before` = tinggi bounce sebelum
 
-### 5. Kontrol Remote ESP
-- **Start ESP Reading**: Mulai sensor reading di ESP
-- **Stop ESP Reading**: Stop sensor reading di ESP  
-- **Request Distance**: Minta satu kali pembacaan
-- **Set Interval**: Ubah interval pembacaan (50-5000ms)
+**`calculate_restitution_coefficient()`**
+- **Tujuan**: Menghitung koefisien restitusi dari bounce data
+- **Formula**: e = √(h_after / h_before)
+- **Alur**:
+  1. Filter data menggunakan lowpass_filter()
+  2. Deteksi bounce menggunakan detect_bounces()
+  3. Hitung koefisien untuk setiap pasangan bounce berturut-turut
+  4. Tampilkan hasil dalam dialog box
 
-## Fitur Signal Processing
+##### 3. **Fungsi MQTT Communication**
 
-### Low-pass Filter
-- **Cutoff**: 5 Hz
-- **Order**: 4th order Butterworth
-- **Purpose**: Mengurangi noise pada data jarak
+**`on_connect(client, userdata, flags, reason_code, properties=None)`**
+- **Trigger**: Saat terkoneksi ke MQTT broker
+- **Aksi**: Subscribe ke topik sensor data saja (tidak ke command topic untuk avoid loop)
+- **Update GUI**: Status label menjadi "Connected to MQTT"
 
-### Bounce Detection
-- **Method**: Peak detection pada sinyal terbalik
-- **Parameters**: 
-  - Minimum height: 5 cm
-  - Minimum distance: 10 samples
-- **Output**: Koordinat bounce points
+**`on_disconnect(client, userdata, flags, reason_code, properties=None)`**
+- **Trigger**: Saat terputus dari MQTT broker
+- **Aksi**: Update status label menjadi "MQTT Disconnected"
 
-### Coefficient Calculation
-- **Input**: Sequence of bounce heights
-- **Method**: Rasio akar kuadrat tinggi bounce berturut-turut
-- **Output**: Individual dan average coefficient
+**`on_message(client, userdata, msg)`**
+- **Trigger**: Saat menerima pesan MQTT dari ESP
+- **Alur**:
+  1. **Filter Command Echo**: Abaikan pesan dari command topic
+  2. **Check Collection Status**: Hanya proses jika `collecting = True`
+  3. **Parse Data**: Coba JSON dulu, fallback ke text format
+  4. **Data Validation**: Validasi range distance (0-400cm)
+  5. **Convert to Ball Height**: `ball_height = sensor_height - raw_distance`
+  6. **Validate Ball Height**: Harus positif (>0)
+  7. **Timestamp Handling**: Gunakan ESP timestamp atau generate lokal
+  8. **Store Data**: Simpan ke arrays global
+  9. **Update GUI**: Refresh labels dan trigger plot update
+
+**`send_mqtt_command(command)`**
+- **Tujuan**: Kirim perintah ke ESP via MQTT
+- **Target Topic**: `sensor/distance/cmd`
+- **Commands**: START_READING, STOP_READING, READ_DISTANCE, INTERVAL:xxx
+
+##### 4. **Fungsi Data Collection Control**
+
+**`start_collection()`**
+- **Alur**:
+  1. Set `collecting = True`
+  2. Reset start_time untuk timestamp relatif
+  3. Kirim command "START_READING" ke ESP
+  4. Update status GUI menjadi "Collecting"
+
+**`stop_collection()`**
+- **Alur**:
+  1. Set `collecting = False`
+  2. Kirim command "STOP_READING" ke ESP
+  3. Update status GUI menjadi "Stopped"
+
+**`reset_data()`**
+- **Alur**:
+  1. Clear semua arrays data
+  2. Reset start_time
+  3. Update counters dan labels
+  4. Refresh plot kosong
+
+##### 5. **Fungsi Visualisasi**
+
+**`update_plot()`**
+- **Trigger**: Dipanggil oleh periodic_update() atau manual refresh
+- **Alur**:
+  1. **Clear Plot**: Bersihkan axes matplotlib
+  2. **Check Data**: Jika kosong, tampilkan plot kosong
+  3. **Apply Filter**: Gunakan lowpass_filter jika data >20 points
+  4. **Plot Main Line**: Garis biru untuk tinggi bola
+  5. **Detect & Plot Bounces**: Titik merah untuk bounce peaks (jika >30 points)
+  6. **Set Labels & Legends**: Update title dengan sensor height
+  7. **Auto-scale Axes**: Atur batas X dan Y dengan margin
+  8. **Draw Canvas**: Refresh tampilan
+
+**`periodic_update()`**
+- **Trigger**: Dipanggil setiap 50-200ms oleh Tkinter timer
+- **Alur**:
+  1. Check flag `update_needed`
+  2. Panggil update_plot() jika perlu
+  3. Update GUI idle tasks
+  4. Schedule next update dengan interval adaptif
+
+##### 6. **Fungsi Configuration**
+
+**`set_sensor_height()`**
+- **Tujuan**: Set tinggi sensor dari lantai
+- **Alur**:
+  1. Tampilkan dialog input (10-200cm)
+  2. Update global variable `sensor_height`
+  3. Trigger plot refresh untuk update title
+  4. Update status label
+
+**`set_interval()`**
+- **Tujuan**: Set interval pembacaan sensor ESP
+- **Alur**:
+  1. Dialog input interval (50-5000ms)
+  2. Kirim command "INTERVAL:xxx" ke ESP
+
+##### 7. **Fungsi Data Export**
+
+**`save_excel()`**
+- **Data Columns**:
+  - Time (s): Timestamp relatif
+  - Ball Height (cm): Tinggi bola dari lantai
+  - Sensor Height (cm): Tinggi sensor (konstanta)
+- **Format**: Excel (.xlsx) menggunakan pandas
+
+**`save_png()`**
+- **Output**: Plot saat ini dalam format PNG
+- **Quality**: Default matplotlib DPI
+
+##### 8. **Fungsi GUI Setup**
+
+**`setup_gui()`**
+- **Alur**:
+  1. **Create Main Window**: Tkinter root dengan title
+  2. **Setup Matplotlib**: Figure, axes, dan canvas
+  3. **Create Status Frame**: Labels untuk status, data count, latest data
+  4. **Create Config Frame**: Tombol sensor height setting
+  5. **Create Button Frame**: Kontrol utama (Start/Stop/Reset/etc.)
+  6. **Create ESP Frame**: Kontrol remote ESP
+  7. **Pack All Frames**: Arrange layout
+
+##### 9. **Main Application Flow**
+
+**`main()`**
+- **Startup Sequence**:
+  1. Print aplikasi info dan konfigurasi
+  2. Panggil setup_gui() - buat interface
+  3. Panggil setup_mqtt() - koneksi ke broker
+  4. Start periodic_update() timer (100ms delay)
+  5. Print usage instructions
+  6. Start tkinter mainloop() - event handling
+
+#### Alur Data Flow Lengkap
+
+```
+ESP Sensor Reading → MQTT Publish → Python MQTT Client → 
+Data Validation → Height Conversion → Store Arrays → 
+Update GUI → Plot Refresh → User Analysis → Export Results
+```
+
+**Real-time Processing:**
+1. ESP baca HC-SR04 setiap 100ms (default)
+2. ESP kirim JSON via MQTT
+3. Python terima di on_message()
+4. Konversi raw distance ke ball height
+5. Store ke time_data[] dan distance_data[]
+6. Trigger update_needed flag
+7. periodic_update() deteksi flag
+8. update_plot() refresh visualization
+9. User dapat lihat bounce pattern real-time
+
+**User Interaction Flow:**
+1. Set sensor height sesuai setup fisik
+2. Klik "Start" → Python kirim START_READING → ESP mulai
+3. Drop bola di area sensor
+4. Monitor real-time plot
+5. Klik "Stop" → Python kirim STOP_READING → ESP berhenti
+6. Klik "Calculate Coefficient" → Analisis bounce pattern
+7. Export data/plot jika diperlukan
 
 ## Troubleshooting
 

@@ -9,8 +9,8 @@
 #include <ArduinoJson.h>  // Tambahkan untuk JSON yang proper
 
 // Update these with values suitable for your network.
-const char* ssid = "Al muajir";
-const char* password = "1618199923";
+const char* ssid = "Aji";
+const char* password = "12345678";
 
 // **MQTT Broker Cloud**
 const char* mqtt_server = "broker.hivemq.com";
@@ -34,8 +34,9 @@ unsigned long lastSensorRead = 0;
 unsigned long lastMqttReconnect = 0;
 unsigned long lastWifiCheck = 0;
 unsigned long program_start_time = 0;  // Tambah untuk timestamp
+unsigned long reading_start_time = 0;  // PERBAIKAN: Tambah untuk reset waktu setiap START_READING
 
-bool isReading = false;
+bool isReading = false;  // PERBAIKAN: Mulai dengan false, tunggu command dari Python
 unsigned long sensorInterval = 100; // PERBAIKAN: Ubah ke 100ms untuk realtime
 
 // Improved HC-SR04 reading dengan filtering
@@ -108,7 +109,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if (distance > 0) {
       // PERBAIKAN: Kirim dengan format JSON yang proper
       JsonDocument doc;
-      doc["timestamp"] = (millis() - program_start_time) / 1000.0;
+      doc["timestamp"] = (millis() - reading_start_time) / 1000.0;  // PERBAIKAN: Gunakan reading_start_time
       doc["distance"] = distance;
       doc["device"] = "ESP8266_HCSR04";
       doc["command_response"] = true;
@@ -120,7 +121,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   else if (message == "START_READING") {
     isReading = true;
-    Serial.println("Started continuous reading");
+    reading_start_time = millis();  // PERBAIKAN: Reset waktu pembacaan ke 0
+    Serial.println("Started continuous reading - timestamp reset to 0");
   }
   else if (message == "STOP_READING") {
     isReading = false;
@@ -187,6 +189,7 @@ void setup() {
   
   // PERBAIKAN: Catat waktu mulai program
   program_start_time = millis();
+  reading_start_time = millis();  // PERBAIKAN: Inisialisasi reading_start_time
   
   setup_wifi();
   
@@ -195,6 +198,7 @@ void setup() {
   
   Serial.println("System initialized");
   Serial.println("Program start time: " + String(program_start_time));
+  Serial.println("Waiting for START_READING command...");  // Tambah info
 }
 
 void loop() {
@@ -205,19 +209,20 @@ void loop() {
   
   unsigned long now = millis();
   
-  // PERBAIKAN: Sensor reading dengan JSON proper
+  // PERBAIKAN: Sensor reading dengan JSON proper dan timestamp dari reading_start_time
   if (isReading && (now - lastSensorRead >= sensorInterval)) {
     lastSensorRead = now;
     
     long distance = readDistance();
     
     if (distance > 0 && client.connected()) {
-      // PERBAIKAN: Format JSON yang sesuai dengan Python
+      // PERBAIKAN: Format JSON yang sesuai dengan Python, timestamp dari reading_start_time
       JsonDocument doc;
-      doc["timestamp"] = (now - program_start_time) / 1000.0;
+      doc["timestamp"] = (now - reading_start_time) / 1000.0;  // PERBAIKAN: Timestamp dari 0 setiap START_READING
       doc["distance"] = distance;
-      doc["device"] = "ESP8266_HCSR04";
+      doc["device"] = "ESP32_HCSR04";
       doc["uptime"] = now;
+      doc["reading_time"] = (now - reading_start_time) / 1000.0;  // PERBAIKAN: Tambah info waktu pembacaan
       
       String jsonString;
       serializeJson(doc, jsonString);
