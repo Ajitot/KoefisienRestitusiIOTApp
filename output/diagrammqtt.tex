@@ -1,0 +1,95 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning, calc, backgrounds}
+\usepackage{float}
+
+\title{Diagram Komunikasi MQTT Sistem IoT}
+\author{ESP8266 \& Python Application}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Diagram Komunikasi MQTT}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture} [
+    node distance=4cm,
+    python/.style={rectangle, draw=black, thick, fill=blue!20, minimum width=3cm, minimum height=2.5cm, font=\footnotesize, text centered, rounded corners=3pt},
+    mqtt/.style={rectangle, draw=black, thick, fill=orange!20, minimum width=3cm, minimum height=2.5cm, font=\footnotesize, text centered, rounded corners=3pt},
+    esp/.style={rectangle, draw=black, thick, fill=green!20, minimum width=3cm, minimum height=2.5cm, font=\footnotesize, text centered, rounded corners=3pt},
+    arrow/.style={->, thick, >=stealth}
+]
+
+% Layer 1: Draw background connections first
+\draw[arrow, blue!60, line width=2pt] (0,0) -- (4,0);
+\draw[arrow, red!60, line width=2pt] (4,0) -- (8,0);  
+\draw[arrow, green!60, line width=2pt] (8,0) -- (4,0);
+\draw[arrow, purple!60, line width=2pt] (4,0) -- (0,0);
+
+% Layer 2: Draw nodes on top
+\node[python] (python_app) at (0,0) {
+    \textbf{Python App}\\[0.3cm]
+    🖥️ GUI \& Analysis\\[0.2cm]
+    $\bullet$ Real-time Monitoring\\
+    $\bullet$ Data Processing\\
+    $\bullet$ Control Interface
+};
+
+\node[mqtt] (mqtt_broker) at (4,0) {
+    \textbf{MQTT Broker}\\[0.3cm]
+    ☁️ HiveMQ Cloud\\[0.2cm]
+    $\bullet$ Message Routing\\
+    $\bullet$ Real-time Delivery\\
+    $\bullet$ Topic Management
+};
+
+\node[esp] (esp_device) at (8,0) {
+    \textbf{ESP8266}\\[0.3cm]
+    📡 HC-SR04 Sensor\\[0.2cm]
+    $\bullet$ Distance Measurement\\
+    $\bullet$ WiFi Connection\\
+    $\bullet$ JSON Data Format
+};
+
+% Layer 3: Add labels on top of arrows
+\node[font=\small, text=blue, fill=white, inner sep=2pt, draw=blue, thick, rounded corners=2pt] at (2,0.5) {Commands};
+\node[font=\small, text=red, fill=white, inner sep=2pt, draw=red, thick, rounded corners=2pt] at (6,0.5) {Forward};
+\node[font=\small, text=green, fill=white, inner sep=2pt, draw=green, thick, rounded corners=2pt] at (6,-0.5) {Sensor Data};
+\node[font=\small, text=purple, fill=white, inner sep=2pt, draw=purple, thick, rounded corners=2pt] at (2,-0.5) {Data};
+
+% Layer 4: Add topic labels
+\node[font=\tiny, text=blue, fill=yellow!30, inner sep=1pt, draw=blue] at (2,1.2) {sensor/distance/cmd};
+\node[font=\tiny, text=green, fill=yellow!30, inner sep=1pt, draw=green] at (6,-1.2) {sensor/distance};
+
+\end{tikzpicture}
+\caption{Arsitektur Komunikasi MQTT Sederhana}
+\end{figure}
+
+\subsection{Penjelasan Alur Komunikasi}
+
+\begin{enumerate}
+\item \textbf{📤 Commands}: Python App mengirim perintah START/STOP ke MQTT Broker
+\item \textbf{🔄 Forward}: MQTT Broker meneruskan perintah ke ESP8266
+\item \textbf{📡 Sensor Data}: ESP8266 mengirim data jarak JSON ke MQTT Broker
+\item \textbf{📥 Data}: MQTT Broker mengirim data ke Python App untuk analisis
+\end{enumerate}
+
+\subsection{MQTT Topics}
+\begin{itemize}
+\item \texttt{sensor/distance/cmd} - Topik untuk perintah kontrol
+\item \texttt{sensor/distance} - Topik untuk data sensor
+\end{itemize}
+
+\subsection{Keunggulan Komunikasi MQTT}
+\begin{itemize}
+\item \textbf{Real-time}: Latensi rendah untuk monitoring langsung
+\item \textbf{Scalable}: Mudah menambah perangkat IoT
+\item \textbf{Reliable}: Quality of Service (QoS) terjamin
+\item \textbf{Internet-based}: Akses dari jarak jauh
+\end{itemize}
+
+\end{document}

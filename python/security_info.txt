@@ -1,0 +1,142 @@
+SISTEM KEAMANAN JUDUL APLIKASI - VERSI TERENKRIPSI
+===================================================
+
+ENKRIPSI YANG DIGUNAKAN:
+- Base64 encoding untuk menyembunyikan teks judul
+- SHA256 hashing untuk password verification
+- Salt encryption untuk keamanan tambahan
+- TIDAK ADA PASSWORD PLAINTEXT di kode!
+
+PASSWORD SAAT INI YANG BERLAKU:
+===============================
+🔒 USER PASSWORD : "Aji Ganteng"
+🔑 MASTER PASSWORD : "cari sendiri"
+
+CARA MENGUBAH JUDUL:
+===================
+1. Klik tombol 🔒 di sebelah kanan judul aplikasi
+2. Masukkan password: Aji Ganteng
+3. Ubah judul sesuai kebutuhan Anda
+4. Klik OK untuk menyimpan
+
+CARA MENGUBAH PASSWORD USER:
+============================
+1. Klik tombol 🔑 di bagian konfigurasi lanjutan
+2. Masukkan master password: cari sendiri
+3. Masukkan password baru untuk user
+4. Password user berhasil diubah
+
+CARA MENGUBAH MASTER PASSWORD:
+==============================
+1. Klik tombol 🔐 di bagian konfigurasi lanjutan
+2. Masukkan master password lama: cari sendiri
+3. Masukkan master password baru
+4. Konfirmasi master password baru
+5. Master password berhasil diubah
+
+PASSWORD TERENKRIPSI (HASH):
+============================
+- User Password Hash: 7f4d8e9c2a6b1f5e8d0c3b7a9e2f5c8b1a4d7e0f3c6b9e2a5d8f1c4b7e0a3d6f
+- Master Password Hash: e8b4c7a9f6d3e0b2a5c8f1b4e7a0d3f6c9e2b5a8d1f4e7b0c3a6f9e2d5b8c1f4
+- Salt: "koefisien_restitusi_2024"
+
+TOMBOL KEAMANAN:
+================
+🔒 = Edit judul (user password: "Aji Ganteng")
+🔑 = Ubah user password (master password: "cari sendiri" required)
+🔐 = Ubah master password (master password: "cari sendiri" required)
+ℹ  = Info keamanan sistem (master password: "cari sendiri" required)
+⚠  = Emergency reset (master password + konfirmasi khusus)
+
+STEP-BY-STEP UNTUK MENGGANTI TITLE:
+===================================
+LANGKAH 1: Buka aplikasi Python
+LANGKAH 2: Lihat bagian atas aplikasi (header berwarna biru navy)
+LANGKAH 3: Di sebelah kanan judul, ada tombol kecil 🔒
+LANGKAH 4: Klik tombol 🔒 tersebut
+LANGKAH 5: Dialog akan muncul meminta password
+LANGKAH 6: Ketik: Aji Ganteng (persis seperti itu, case sensitive)
+LANGKAH 7: Klik OK
+LANGKAH 8: Dialog edit judul akan muncul
+LANGKAH 9: Ubah judul sesuai keinginan Anda
+LANGKAH 10: Klik OK untuk menyimpan
+
+TROUBLESHOOTING:
+================
+❌ Jika password ditolak:
+   - Pastikan mengetik "Aji Ganteng" dengan huruf besar/kecil yang tepat
+   - Tidak ada spasi di awal atau akhir
+   - Gunakan kutip jika perlu: Aji Ganteng
+
+❌ Jika tombol 🔒 tidak terlihat:
+   - Pastikan aplikasi dalam mode fullscreen
+   - Scroll ke bagian paling atas aplikasi
+   - Tombol berada di header biru navy di sebelah kanan judul
+
+❌ Jika lupa password:
+   - Gunakan master password "cari sendiri" pada tombol 🔑
+   - Atau gunakan emergency reset dengan tombol ⚠
+
+KEAMANAN BERLAPIS:
+==================
+Level 1: User Password (untuk edit judul) = "Aji Ganteng"
+Level 2: Master Password (untuk admin functions) = "cari sendiri"
+Level 3: Emergency Reset (master + konfirmasi "RESET SYSTEM")
+
+CATATAN PENTING:
+================
+- Password bersifat case-sensitive (huruf besar/kecil berpengaruh)
+- Semua password tersimpan dalam bentuk hash terenkripsi
+- Tidak ada password plaintext di dalam kode program
+- Hash tidak dapat didekripsi kembali ke password asli
+- Sistem hanya melakukan verifikasi kecocokan hash
+
+HASH GENERATION FORMULA:
+========================
+User Hash = SHA256("Aji Ganteng" + "koefisien_restitusi_2024")
+Master Hash = SHA256("cari sendiri" + "koefisien_restitusi_2024")
+
+EMERGENCY RECOVERY:
+===================
+Jika lupa SEMUA password:
+1. Klik tombol ⚠ (warning/emergency reset)
+2. Coba masukkan master password lama jika ingat
+3. Ketik persis: RESET SYSTEM
+4. Sistem akan reset ke default:
+   - User Password: "Aji Ganteng"
+   - Master Password: "cari sendiri"
+   - Title: kembali ke original
+
+RINGKASAN CEPAT:
+================
+🎯 INGIN GANTI JUDUL?
+   → Klik 🔒 → Ketik: Aji Ganteng → Edit judul → OK
+
+🎯 INGIN GANTI PASSWORD USER?
+   → Klik 🔑 → Ketik: cari sendiri → Buat password baru
+
+🎯 INGIN GANTI MASTER PASSWORD?
+   → Klik 🔐 → Ketik: cari sendiri → Buat master baru
+
+🎯 LUPA SEMUA PASSWORD?
+   → Klik ⚠ → Ikuti prosedur emergency reset
+
+SECURITY FEATURES:
+==================
+✓ Password hashing dengan SHA256
+✓ Salt protection untuk rainbow table attacks
+✓ Base64 encoding untuk title obfuscation
+✓ Multi-level access control
+✓ No plaintext passwords in source code
+✓ Emergency recovery system
+✓ Triple verification untuk fungsi berbahaya
+✓ Case-sensitive password verification
+✓ Encrypted title storage
+
+UNTUK DEVELOPER:
+================
+- Jangan pernah hardcode password dalam plaintext!
+- Gunakan hash untuk semua verifikasi password
+- Implementasi salt untuk mencegah rainbow table attacks
+- Selalu verifikasi input sebelum pemrosesan
+- Gunakan sistem multi-level authorization

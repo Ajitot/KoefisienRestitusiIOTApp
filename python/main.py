@@ -1053,15 +1053,28 @@ def setup_gui():
     # Alternative for other OS: root.attributes('-zoomed', True)
     
     # Configure grid weights for responsive design
-    root.grid_rowconfigure(0, weight=1)  # Main content row
-    root.grid_rowconfigure(1, weight=0)  # Control buttons row
+    root.grid_rowconfigure(0, weight=0)  # Title row
+    root.grid_rowconfigure(1, weight=1)  # Main content row
+    root.grid_rowconfigure(2, weight=0)  # Control buttons row
     root.grid_columnconfigure(0, weight=1)
+    
+    # ===========================================
+    # BARIS 0: JUDUL UTAMA
+    # ===========================================
+    title_frame = tk.Frame(root, bg="navy", relief=tk.RAISED, bd=2)
+    title_frame.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
+    
+    title_label = tk.Label(title_frame, 
+                          text="Analisis Koefisien Restitusi - Aji Muhamad Pranata (1217030004)",
+                          font=("Arial", 16, "bold"),
+                          fg="white", bg="navy", pady=10)
+    title_label.pack()
     
     # ===========================================
     # BARIS 1: KONTEN UTAMA (3 KOLOM)
     # ===========================================
     main_frame = tk.Frame(root, relief=tk.RAISED, bd=1)
-    main_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
+    main_frame.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
     
     # Configure main frame grid
     main_frame.grid_rowconfigure(0, weight=1)
@@ -1146,7 +1159,7 @@ def setup_gui():
     # BARIS 2: TOMBOL KONTROL (BEBERAPA BARIS)
     # ===========================================
     control_frame = tk.Frame(root, relief=tk.RAISED, bd=1)
-    control_frame.grid(row=1, column=0, sticky="ew", padx=5, pady=5)
+    control_frame.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
     
     # Status row
     status_frame = tk.Frame(control_frame)
@@ -1165,20 +1178,17 @@ def setup_gui():
     config_frame = tk.LabelFrame(control_frame, text="Konfigurasi", font=("Arial", 11, "bold"))
     config_frame.pack(fill=tk.X, padx=5, pady=3)
     
+    
     tk.Button(config_frame, text=f"Jenis Bola: {selected_ball_type}", 
              command=set_ball_type, bg="lightblue", width=20, font=("Arial", 10, "bold")).pack(side=tk.LEFT, padx=3, pady=3)
     tk.Button(config_frame, text=f"Tinggi Sensor: {sensor_height}cm", 
              command=set_sensor_height, bg="lightgray", width=18, font=("Arial", 10)).pack(side=tk.LEFT, padx=3, pady=3)
     tk.Button(config_frame, text=f"Ambang Pantulan: {bounce_threshold}cm", 
              command=set_bounce_threshold, bg="lightyellow", width=20, font=("Arial", 10)).pack(side=tk.LEFT, padx=3, pady=3)
-    
-    # Configuration row 2 - PERBAIKAN: Tambah tombol untuk selisih tinggi minimum
-    config_frame2 = tk.LabelFrame(control_frame, text="Konfigurasi Lanjutan", font=("Arial", 11, "bold"))
-    config_frame2.pack(fill=tk.X, padx=5, pady=3)
-    
-    tk.Button(config_frame2, text=f"Selisih Tinggi Min: {min_height_difference}cm", 
+        
+    tk.Button(config_frame, text=f"Selisih Tinggi Min: {min_height_difference}cm", 
              command=set_min_height_difference, bg="lightpink", width=20, font=("Arial", 10)).pack(side=tk.LEFT, padx=3, pady=3)
-    tk.Button(config_frame2, text=f"Jarak Min: {min_bounce_distance}", 
+    tk.Button(config_frame, text=f"Jarak Min: {min_bounce_distance}", 
              command=set_min_bounce_distance, bg="lightcyan", width=15, font=("Arial", 10)).pack(side=tk.LEFT, padx=3, pady=3)
     
     # Main control row
