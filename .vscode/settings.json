@@ -1,0 +1,186 @@
+{
+  // ====================
+  // Build Configuration
+  // ====================
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk (standard)",
+      "tools": [
+        "latexmk",
+        "copy-pdf"
+      ]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-shell-escape",
+        "-outdir=build",
+        "-auxdir=build",
+        "%DOC%"
+      ]
+    },
+    {
+      "name": "bibtex",
+      "command": "bibtex",
+      "args": [
+        "build\\%DOCFILE%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "copy-pdf",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "copy",
+        "build\\%DOCFILE%.pdf",
+        "%DOCFILE%.pdf"
+      ],
+      "env": {}
+    },
+    {
+      "name": "remove-build",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "if exist build rmdir /s /q build"
+      ],
+      "env": {}
+    }
+  ],
+  // Build Settings
+  "latex-workshop.latex.build.forceRecipeUsage": false,
+  "latex-workshop.latex.recipe.default": "lastUsed",
+  "latex-workshop.latex.outDir": "./build",
+  "latex-workshop.latex.magic.args": [
+    "-output-directory=build",
+    "%DOC%"
+  ],
+  "latex-workshop.latex.rootFile.useSubFile": true,
+  "latex-workshop.latex.clean.subfolder.enabled": true,
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.latex.autoBuild.run": "never",
+  "latex-workshop.linting.chktex.enabled": false,
+  "latex-workshop.linting.lacheck.enabled": false,
+  "latex-workshop.linting.delay": 1000,
+  "latex-workshop.message.warning.show": false,
+  "latex-workshop.message.error.show": false,
+  "latex-workshop.message.information.show": false,
+  // ====================
+  // File Management
+  // ====================
+  "latex-workshop.latex.bibDirs": [
+    "references"
+  ],
+  "latex-workshop.latex.watch.files.ignore": [
+    "**/archive/**"
+  ],
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "latex-workshop.latex.clean.fileTypes": [
+    "*.aux",
+    "*.bbl",
+    "*.blg",
+    "*.idx",
+    "*.ind",
+    "*.lof",
+    "*.lot",
+    "*.out",
+    "*.toc",
+    "*.acn",
+    "*.acr",
+    "*.alg",
+    "*.glg",
+    "*.glo",
+    "*.gls",
+    "*.fls",
+    "*.log",
+    "*.fdb_latexmk",
+    "*.snm",
+    "*.synctex(busy)",
+    "*.synctex.gz(busy)",
+    "*.nav",
+    "*.vrb",
+    "*.gz",
+    "*.bcf",
+    "*.nlo",
+    "*.run.xml"
+  ],
+  // ====================
+  // PDF Viewer Settings
+  // ====================
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.view.pdf.ref.viewer": "tabOrBrowser",
+  "latex-workshop.view.pdf.zoom": "auto",
+  "latex-workshop.view.pdf.reload.transition": "fade",
+  "latex-workshop.view.autoFocus.enabled": true,
+  // PDF Appearance
+  "latex-workshop.view.pdf.color.dark.backgroundColor": "#222222",
+  "latex-workshop.view.pdf.color.dark.pageBorderColor": "#ffffff",
+  // PDF Navigation
+  "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
+  "latex-workshop.view.outline.sync.viewer": true,
+  "latex-workshop.view.pdf.external.synctex.args": [
+    "-forward-search",
+    "%TEX%",
+    "%LINE%",
+    "-reuse-instance",
+    "-inverse-search",
+    "\"C:/Users/<Username>/AppData/Local/Programs/Microsoft VS Code/Code.exe\" \"C:/Users/<Username>/AppData/Local/Programs/Microsoft VS Code/resources/app/out/cli.js\" --ms-enable-electron-run-as-node -r -g \"%f:%l\"",
+    "%PDF%"
+  ],
+  // ====================
+  // Editor Settings
+  // ====================
+  "latex-workshop.mathpreviewpanel.editorGroup": "above",
+  "latex-workshop.mathpreviewpanel.cursor.enabled": true,
+  "latex-workshop.hover.preview.enabled": true,
+  "latex-workshop.message.badbox.show": "none",
+  "latex-workshop.intellisense.includegraphics.preview.enabled": true,
+  "latex-workshop.codespaces.portforwarding.openDelay": 20000,
+  "editor.formatOnSave": true,
+  // ====================
+  // LaTeX Formatter Settings
+  // ====================
+  "[latex]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "latex-workshop.formatting.latex": "latexindent",
+  // ====================
+  // Theme Settings
+  // ====================
+  "workbench.colorTheme": "Alu Dark - PyCharm High Contrast",
+  "editor.semanticTokenColorCustomizations": {
+    "[Aluerie PyCharm High Contrast Dark]": {
+      "enabled": true,
+      "rules": {
+        "type": "#26A69A",
+        "namespace": "#00897B",
+        "function": "#00BCD4",
+        "variable": "#42A5F5",
+        "number": "#90A4AE",
+        "string": {
+          "foreground": "#90A4AE",
+          "italic": true
+        },
+        "comment": {
+          "foreground": "#546E7A",
+          "fontStyle": "italic"
+        },
+        "variable.readonly.defaultLibrary": "#A89F9B",
+        "macro": "#7E57C2",
+        "keyword": "#7986CB",
+        "operator": "#9575CD",
+        "type.modification": "#00897B",
+        "punctuation": "#A1887F"
+      }
+    }
+  }
+}

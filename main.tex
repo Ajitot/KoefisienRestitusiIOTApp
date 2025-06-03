@@ -1,673 +1,126 @@
-\documentclass[12pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[bahasa]{babel}
-\usepackage{geometry}
+\documentclass[a4paper, 12pt]{article}
 \usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
 \usepackage{fancyhdr}
-\usepackage{listings}
-\usepackage{xcolor}
-\usepackage{booktabs}
-\usepackage{float}
-\usepackage{hyperref}
-\usepackage{titlesec}
-\usepackage{enumitem}
-\usepackage{multicol}
-\usepackage{array}
-\usepackage{longtable}
+\usepackage[a4paper, top=3cm, left=3cm, right=2cm, bottom=2cm]{geometry}
+\usepackage{xcolor} % Paket untuk warna
+\usepackage{setspace} % Paket untuk spasi
+\usepackage{xcolor, color}
+\usepackage{setspace}
+\usepackage{titlesec,titletoc}
 
-% Page setup
-\geometry{margin=2.5cm}
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{Modul Praktikum Koefisien Restitusi IoT}
-\fancyhead[R]{Teknik Elektro}
-\fancyfoot[C]{\thepage}
+\linespread{1.25} % Mengatur spasi seluruh dokumen
 
-% Colors for code highlighting
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+% Custom commands
+\definecolor{sectionColor}{rgb}{0.87, 0.92, 0.96}
 
-% Code listing style
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},   
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2
+% Helper command for full-width section background
+\newcommand{\sectionformat}[1]{%
+    \noindent\colorbox{sectionColor}{\parbox{\dimexpr\textwidth-2\fboxsep}{\thesection\quad#1}}%
 }
-\lstset{style=mystyle}
 
-% Title formatting
-\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
-\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+%custom style for section title
+\titleformat{\section}
+    {\normalfont\Large\bfseries}
+    {}
+    {0em}
+    {\sectionformat}
 
 \begin{document}
 
-% Cover Page
-\begin{titlepage}
-    \centering
-    \vspace*{2cm}
-    
-    {\huge\bfseries MODUL PRAKTIKUM\\[0.5cm]}
-    {\Large ANALISIS KOEFISIEN RESTITUSI\\MENGGUNAKAN SISTEM IoT\\[0.3cm]}
-    {\large BERBASIS ESP8266/ESP32 DAN SENSOR HC-SR04\\[2cm]}
-    
-    % \includegraphics[width=0.3\textwidth]{logo_univ.png}\\[1cm]
-    
-    {\large\bfseries Program Studi Teknik Elektro\\[0.5cm]}
-    {\large Mata Kuliah: Wireless Power Transfer / IoT dan Sistem Tertanam\\[0.3cm]}
-    {\large Semester: VI/VII\\[0.3cm]}
-    {\large Waktu: 3 × 50 menit\\[2cm]}
-    
-    {\large\bfseries Disusun oleh:\\[0.5cm]}
-    {\large Aji Muhamad Pranata\\[0.2cm]}
-    {\large NIM: 1217030004\\[3cm]}
-    
-    {\large Tahun Akademik 2024/2025}
-    
-\end{titlepage}
+% Title
+\begin{center}
+    \textcolor[rgb]{0.176, 0.455, 0.710}{%
+        \huge \textbf{%
+            Analisis Koefisien Restitusi pada Bola Berbasis ESP8266 Dengan Protokol MQTT Melalui Antarmuka Grafis Secara Realtime
+        }%
+    }
+\end{center}
 
-\newpage
-\tableofcontents
-\newpage
-
-\section{TUJUAN PRAKTIKUM}
-
-\subsection{Tujuan Umum}
-Mahasiswa mampu memahami dan mengimplementasikan sistem IoT untuk pengukuran fisika secara real-time dengan menganalisis koefisien restitusi bola menggunakan sensor ultrasonik.
-
-\subsection{Tujuan Khusus}
+\section{Tujuan}
 \begin{enumerate}
-    \item Memahami prinsip kerja sensor ultrasonik HC-SR04
-    \item Mengimplementasikan komunikasi MQTT pada ESP8266/ESP32
-    \item Membangun sistem monitoring real-time menggunakan Python dan Tkinter
-    \item Menganalisis data sensor untuk menghitung koefisien restitusi
-    \item Memahami konsep fisika tentang tumbukan elastis dan inelastis
-    \item Menggunakan signal processing untuk deteksi puncak pantulan
+    \item Merancang dan membangun sistem pengukur koefisien restitusi berbasis ESP8266 dengan protokol MQTT
+    \item Mengetahui pengaruh elastisitas bola terhadap jumlah pantulan yang terukur oleh sensor HCSR04
+    \item Mengetahui nilai koefisien restitusi dari setiap pantulan bola yang dihasilkan
 \end{enumerate}
 
-\section{DASAR TEORI}
-
+\section{Dasar Teori}
 \subsection{Koefisien Restitusi}
-Koefisien restitusi (e) adalah ukuran elastisitas tumbukan antara dua benda. Untuk bola yang dijatuhkan dari ketinggian tertentu:
-
-\begin{equation}
-e = \sqrt{\frac{h_2}{h_1}}
-\end{equation}
-
-dimana:
-\begin{itemize}
-    \item $h_1$ = tinggi pantulan pertama (cm)
-    \item $h_2$ = tinggi pantulan kedua (cm)  
-    \item $e$ = koefisien restitusi ($0 \leq e \leq 1$)
-\end{itemize}
-
-\textbf{Klasifikasi tumbukan:}
-\begin{itemize}
-    \item $e = 1$: Tumbukan elastis sempurna (tidak ada kehilangan energi)
-    \item $e = 0$: Tumbukan inelastis sempurna (kehilangan energi maksimum)
-    \item $0 < e < 1$: Tumbukan semi-elastis (kondisi nyata)
-\end{itemize}
-
-\subsection{Sensor HC-SR04}
-Sensor ultrasonik yang mengukur jarak dengan prinsip:
-\begin{enumerate}
-    \item Mengirim gelombang ultrasonik (40 kHz)
-    \item Mengukur waktu pantul (echo)
-    \item Menghitung jarak: $d = \frac{t \times v}{2}$
-\end{enumerate}
-
-\textbf{Spesifikasi teknis:}
-\begin{itemize}
-    \item Jangkauan: 2cm - 400cm
-    \item Akurasi: ±3mm
-    \item Sudut pengukuran: <15°
-    \item Tegangan operasi: 5V DC
-    \item Arus: 15mA
-\end{itemize}
-
+\subsection{Elastisitas Bola}
+\subsection{Mikrokontroler ESP8266}
+\subsection{Sensor HCSR04}
 \subsection{Protokol MQTT}
-Message Queuing Telemetry Transport untuk komunikasi IoT:
-\begin{itemize}
-    \item \textbf{Publisher}: ESP8266/ESP32 (sensor data)
-    \item \textbf{Subscriber}: Aplikasi Python (data processing)
-    \item \textbf{Broker}: HiveMQ (cloud broker)
-    \item \textbf{Topic}: \texttt{sensor/distance}
-\end{itemize}
 
-\subsection{Signal Processing}
-\begin{itemize}
-    \item \textbf{Low-pass filter}: Mengurangi noise dari sensor menggunakan filter Butterworth
-    \item \textbf{Peak detection}: Mendeteksi puncak pantulan bola menggunakan algoritma \texttt{find\_peaks}
-    \item \textbf{Threshold}: Ambang batas minimum untuk validasi pantulan
-\end{itemize}
+\section{Metode Percobaan}
 
-\section{ALAT DAN BAHAN}
-
-\subsection{Hardware}
-\begin{enumerate}
-    \item ESP8266/ESP32 development board (1 unit)
-    \item Sensor HC-SR04 (1 unit)
-    \item Kabel jumper male-female (4 buah)
-    \item Breadboard (1 unit)
-    \item Kabel USB (1 unit)
-    \item Bola untuk pengujian:
-    \begin{itemize}
-        \item Bola bekel
-        \item Bola tenis meja  
-        \item Bola tenis lapangan
-        \item Bola plastik
-        \item Bola sepak karet
-    \end{itemize}
-\end{enumerate}
-
-\subsection{Software}
-\begin{enumerate}
-    \item Arduino IDE dengan library:
-    \begin{itemize}
-        \item WiFi (ESP8266WiFi/WiFi)
-        \item PubSubClient
-        \item ArduinoJson
-    \end{itemize}
-    \item Python 3.x dengan library:
-    \begin{itemize}
-        \item tkinter (GUI)
-        \item matplotlib (plotting)
-        \item pandas (data processing)
-        \item scipy (signal processing)
-        \item paho-mqtt (MQTT client)
-        \item numpy (numerical computing)
-    \end{itemize}
-    \item MQTT Broker (HiveMQ - cloud)
-\end{enumerate}
-
-\subsection{Tools Pendukung}
-\begin{enumerate}
-    \item Penggaris/meteran (untuk kalibrasi)
-    \item Tripod atau penyangga untuk sensor
-    \item Komputer/laptop dengan koneksi internet
-\end{enumerate}
-
-\section{PROSEDUR PRAKTIKUM}
-
-\subsection{Langkah 1: Setup Hardware}
-
-\subsubsection{Koneksi ESP8266 dengan HC-SR04}
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}cc@{}}
-\toprule
-\textbf{HC-SR04} & \textbf{ESP8266} \\
-\midrule
-VCC & 3.3V/5V \\
-GND & GND \\
-TRIG & D1 (GPIO 5) \\
-ECHO & D2 (GPIO 4) \\
-\bottomrule
-\end{tabular}
-\caption{Koneksi ESP8266 dengan HC-SR04}
+\subsection{Alat dan Bahan}
+\begin{table}[!ht]
+    \centering
+    \caption{Alat yang digunakan}
+    \label{tab:alat}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{No} & \textbf{Alat Penelitian} & \textbf{Jumlah Alat} \\
+        \hline
+        1 & Laptop & 1 buah \\
+        \hline
+        2 & ESP8266 & 1 buah \\
+        \hline
+        3 & HCSR-04 & 1 buah \\
+        \hline
+        4 & Kabel Jumper & Secukupnya \\
+        \hline
+        5 & Akrilik & Secukupnya \\
+        \hline
+        6 & Pipa Besi & Secukupnya \\
+        \hline
+        7 & Mur dan Baut & Secukupnya \\
+        \hline
+        8 & Penyambung Pipa & Secukupnya \\
+        \hline
+        9 & \textit{Software} Arduino & - \\
+        \hline
+    \end{tabular}
 \end{table}
 
-\subsubsection{Koneksi ESP32 dengan HC-SR04}
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}cc@{}}
-\toprule
-\textbf{HC-SR04} & \textbf{ESP32} \\
-\midrule
-VCC & 5V \\
-GND & GND \\
-TRIG & GPIO 14 \\
-ECHO & GPIO 27 \\
-\bottomrule
-\end{tabular}
-\caption{Koneksi ESP32 dengan HC-SR04}
+\begin{table}[!ht]
+    \centering
+    \caption{Bahan yang digunakan}
+    \label{tab:bahan}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{No} & \textbf{Bahan Penelitian} & \textbf{Jumlah Bahan} \\
+        \hline
+        1 & Bola Tenis Meja & 1 buah \\
+        \hline
+        2 & Bola Bekel & 1 buah \\
+        \hline
+        3 & Bola Sepak Karet & 1 buah \\
+        \hline
+        4 & Bola Plastik & 1 buah \\
+        \hline
+        5 & Bola Tenis lapang & 1 buah \\
+        \hline
+    \end{tabular}
 \end{table}
 
-\subsubsection{Pemasangan Sensor}
-\begin{enumerate}
-    \item Pasang sensor pada ketinggian 35cm dari lantai
-    \item Arahkan sensor vertikal ke bawah
-    \item Pastikan area bebas dari halangan dalam radius 50cm
-    \item Gunakan tripod atau penyangga yang stabil
-\end{enumerate}
+\subsection{Prosedur Percobaan}
 
-\subsection{Langkah 2: Programming ESP8266/ESP32}
-
-\subsubsection{Konfigurasi Arduino IDE}
-\begin{enumerate}
-    \item Buka Arduino IDE
-    \item Install ESP8266/ESP32 board package
-    \item Install library yang diperlukan:
-    \begin{itemize}
-        \item PubSubClient by Nick O'Leary
-        \item ArduinoJson by Benoit Blanchon
-    \end{itemize}
-\end{enumerate}
-
-\subsubsection{Upload Program}
-\begin{enumerate}
-    \item Copy code dari file \texttt{src/main.cpp}
-    \item Konfigurasi WiFi:
-\end{enumerate}
-
-\begin{lstlisting}[language=C++, caption=Konfigurasi WiFi]
-const char* ssid = "NAMA_WIFI_ANDA";
-const char* password = "PASSWORD_WIFI_ANDA";
-\end{lstlisting}
-
-\begin{enumerate}[resume]
-    \item Pilih board yang sesuai (ESP8266/ESP32)
-    \item Pilih port COM yang benar
-    \item Upload program ke ESP
-    \item Monitor Serial untuk debugging
-\end{enumerate}
-
-\subsection{Langkah 3: Setup Software Python}
-
-\subsubsection{Install Dependencies}
-\begin{lstlisting}[language=bash, caption=Install Python Libraries]
-pip install tkinter matplotlib pandas scipy paho-mqtt numpy openpyxl
-\end{lstlisting}
-
-\subsubsection{Jalankan Aplikasi}
-\begin{lstlisting}[language=bash, caption=Menjalankan Aplikasi Python]
-cd python
-python main.py
-\end{lstlisting}
-
-\subsection{Langkah 4: Kalibrasi Sistem}
-
-\subsubsection{Pengaturan Tinggi Sensor}
-\begin{enumerate}
-    \item Klik tombol "Tinggi Sensor: 35cm"
-    \item Masukkan tinggi aktual sensor dari lantai
-    \item Validasi dengan mengukur jarak objek yang diketahui
-\end{enumerate}
-
-\subsubsection{Test Koneksi MQTT}
-\begin{enumerate}
-    \item Pastikan status menunjukkan "Terhubung ke MQTT"
-    \item Cek data masuk di tabel real-time
-    \item Verifikasi komunikasi dua arah dengan ESP
-\end{enumerate}
-
-\subsubsection{Validasi Pembacaan}
-\begin{enumerate}
-    \item Letakkan objek di berbagai jarak
-    \item Cek keakuratan pembacaan sensor
-    \item Bandingkan dengan pengukuran manual
-\end{enumerate}
-
-\subsection{Langkah 5: Pengumpulan Data}
-
-\subsubsection{Persiapan Pengukuran}
-\begin{enumerate}
-    \item Pilih jenis bola menggunakan dropdown
-    \item Set parameter deteksi sesuai karakteristik bola
-    \item Reset data pengukuran sebelumnya
-    \item Pastikan area pengukuran bebas gangguan
-\end{enumerate}
-
-\subsubsection{Eksekusi Pengukuran}
-\begin{enumerate}
-    \item Klik "Mulai Pengumpulan Data"
-    \item Jatuhkan bola dari ketinggian ≈30cm
-    \item Biarkan bola memantul sampai berhenti
-    \item Klik "Hentikan Pengumpulan"
-    \item Catat durasi dan jumlah pantulan
-\end{enumerate}
-
-\subsubsection{Pengulangan untuk Bola Lain}
-\begin{enumerate}
-    \item Reset data sebelumnya
-    \item Ganti jenis bola di pengaturan
-    \item Ulangi prosedur pengukuran
-    \item Dokumentasikan setiap percobaan
-\end{enumerate}
-
-\subsection{Langkah 6: Analisis Data}
-
-\subsubsection{Perhitungan Koefisien}
-\begin{enumerate}
-    \item Klik "Hitung Koefisien Restitusi"
-    \item Tunggu proses analisis selesai
-    \item Review hasil di panel analisis
-    \item Catat nilai koefisien dan statistik
-\end{enumerate}
-
-\subsubsection{Interpretasi Hasil}
-Analisis meliputi:
-\begin{itemize}
-    \item Koefisien restitusi rata-rata
-    \item Standar deviasi
-    \item Klasifikasi material
-    \item Persentase retensi energi
-    \item Tren penurunan tinggi pantulan
-\end{itemize}
-
-\subsubsection{Export dan Dokumentasi}
-\begin{enumerate}
-    \item Simpan data mentah ke format Excel
-    \item Export grafik ke format PNG/PDF
-    \item Simpan hasil analisis lengkap ke file teks
-    \item Buat screenshot interface untuk laporan
-\end{enumerate}
-
-\section{PENGAMATAN DAN ANALISIS}
-
-\subsection{Tabel Pengamatan}
-\begin{longtable}{|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{3cm}|}
-\hline
-\textbf{Jenis Bola} & \textbf{Pantulan ke-} & \textbf{Tinggi (cm)} & \textbf{Koefisien (e)} & \textbf{Retensi Energi (\%)} \\
-\hline
-\multirow{3}{*}{Bekel} & 1 & & & \\
-\cline{2-5}
-& 2 & & & \\
-\cline{2-5}
-& 3 & & & \\
-\hline
-\multirow{3}{*}{Tenis Meja} & 1 & & & \\
-\cline{2-5}
-& 2 & & & \\
-\cline{2-5}
-& 3 & & & \\
-\hline
-\multirow{3}{*}{Plastik} & 1 & & & \\
-\cline{2-5}
-& 2 & & & \\
-\cline{2-5}
-& 3 & & & \\
-\hline
-\end{longtable}
-
-\subsection{Pertanyaan Analisis}
-
-\subsubsection{Analisis Koefisien}
-\begin{enumerate}
-    \item Bandingkan koefisien restitusi antar jenis bola
-    \item Bola mana yang paling elastis? Jelaskan alasannya
-    \item Hubungkan hasil dengan material penyusun bola
-    \item Analisis konsistensi koefisien antar pantulan
-\end{enumerate}
-
-\subsubsection{Analisis Energi}
-\begin{enumerate}
-    \item Hitung persentase energi yang hilang setiap pantulan
-    \item Identifikasi faktor penyebab kehilangan energi
-    \item Analisis trend energi pada pantulan berturut-turut
-    \item Bandingkan efisiensi energi antar material
-\end{enumerate}
-
-\subsubsection{Analisis Signal Processing}
-\begin{enumerate}
-    \item Mengapa diperlukan filter low-pass pada data sensor?
-    \item Bagaimana pengaruh threshold terhadap deteksi pantulan?
-    \item Apa keuntungan menggunakan algoritma peak detection?
-    \item Analisis noise dan cara mengatasinya
-\end{enumerate}
-
-\subsection{Contoh Perhitungan}
-
-Untuk bola dengan data pantulan:
-\begin{itemize}
-    \item $h_1 = 25.3$ cm
-    \item $h_2 = 18.7$ cm
-\end{itemize}
-
-\textbf{Perhitungan koefisien restitusi:}
-\begin{align}
-e &= \sqrt{\frac{h_2}{h_1}} \\
-&= \sqrt{\frac{18.7}{25.3}} \\
-&= \sqrt{0.739} \\
-&= 0.860
-\end{align}
-
-\textbf{Analisis energi:}
-\begin{align}
-\text{Retensi energi} &= e^2 \times 100\% \\
-&= 0.860^2 \times 100\% \\
-&= 74.0\%
-\end{align}
-
-\begin{align}
-\text{Kehilangan energi} &= 100\% - 74.0\% \\
-&= 26.0\%
-\end{align}
-
-\section{TROUBLESHOOTING}
-
-\subsection{Masalah Koneksi ESP}
-\begin{table}[H]
-\centering
-\begin{tabular}{|p{5cm}|p{8cm}|}
-\hline
-\textbf{Masalah} & \textbf{Solusi} \\
-\hline
-ESP tidak terhubung WiFi & Cek SSID dan password, pastikan sinyal kuat, reset ESP \\
-\hline
-Data tidak masuk ke Python & Cek koneksi MQTT broker, pastikan topic sama, periksa firewall \\
-\hline
-Pembacaan sensor tidak akurat & Cek koneksi kabel, pastikan sensor tidak tertutup, kalibrasi ulang \\
-\hline
-Pantulan tidak terdeteksi & Turunkan threshold deteksi, pastikan bola memantul cukup tinggi \\
-\hline
-\end{tabular}
-\caption{Troubleshooting Umum}
-\end{table}
-
-\subsection{Masalah Software Python}
-\begin{table}[H]
-\centering
-\begin{tabular}{|p{5cm}|p{8cm}|}
-\hline
-\textbf{Masalah} & \textbf{Solusi} \\
-\hline
-Program Python error & Install ulang dependencies, cek versi Python (minimal 3.6) \\
-\hline
-GUI tidak responsif & Restart aplikasi, cek penggunaan memori sistem \\
-\hline
-Export file gagal & Pastikan direktori memiliki permission write, tutup file yang sedang dibuka \\
-\hline
-Grafik tidak update & Klik refresh manual, restart koneksi MQTT \\
-\hline
-\end{tabular}
-\caption{Troubleshooting Software}
-\end{table}
-
-\section{TUGAS DAN EVALUASI}
-
-\subsection{Tugas Praktikum}
-
-\subsubsection{Pengukuran Dasar (30\%)}
-\begin{enumerate}
-    \item Ukur koefisien restitusi 5 jenis bola berbeda
-    \item Buat tabel perbandingan hasil pengukuran
-    \item Analisis perbedaan karakteristik antar bola
-    \item Dokumentasikan setiap tahap pengukuran
-\end{enumerate}
-
-\subsubsection{Analisis Lanjutan (40\%)}
-\begin{enumerate}
-    \item Studi pengaruh ketinggian jatuh terhadap koefisien
-    \item Analisis pengaruh parameter filter terhadap hasil
-    \item Validasi hasil dengan perhitungan manual
-    \item Buat grafik perbandingan koefisien vs material
-\end{enumerate}
-
-\subsubsection{Pengembangan Sistem (30\%)}
-\begin{enumerate}
-    \item Modifikasi parameter deteksi untuk optimasi
-    \item Implementasi filter tambahan (optional)
-    \item Proposal peningkatan akurasi sistem
-    \item Evaluasi kelebihan dan kekurangan sistem
-\end{enumerate}
-
-\subsection{Format Laporan}
-
-\subsubsection{Struktur Laporan}
-\begin{enumerate}
-    \item \textbf{Cover dan Identitas}
-    \item \textbf{Tujuan dan Dasar Teori}
-    \item \textbf{Prosedur yang Dilakukan}
-    \item \textbf{Data dan Hasil Pengamatan}
-    \item \textbf{Analisis dan Pembahasan}
-    \item \textbf{Kesimpulan dan Saran}
-    \item \textbf{Lampiran} (code, grafik, data Excel)
-\end{enumerate}
-
-\subsubsection{Kriteria Penilaian}
-\begin{itemize}
-    \item Kelengkapan data: 25\%
-    \item Analisis dan pembahasan: 35\%
-    \item Kesimpulan: 20\%
-    \item Format dan kerapian: 20\%
-\end{itemize}
-
-\section{KESIMPULAN}
-
-Praktikum ini memberikan pengalaman komprehensif dalam:
-
-\subsection{Aspek IoT}
-\begin{itemize}
-    \item Implementasi komunikasi wireless menggunakan MQTT
-    \item Pengembangan sistem monitoring real-time
-    \item Integrasi sensor dengan cloud-based data processing
-    \item Pemahaman arsitektur sistem IoT terdistribusi
-\end{itemize}
-
-\subsection{Aspek Fisika}
-\begin{itemize}
-    \item Pemahaman mendalam tentang koefisien restitusi
-    \item Analisis energi dalam tumbukan elastis dan inelastis
-    \item Karakterisasi material berdasarkan sifat elastisitas
-    \item Aplikasi prinsip fisika dalam teknologi modern
-\end{itemize}
-
-\subsection{Aspek Programming}
-\begin{itemize}
-    \item Embedded programming dengan Arduino/ESP
-    \item Desktop application development dengan Python
-    \item Signal processing dan analisis data
-    \item Integration testing dan debugging sistem
-\end{itemize}
-
-\section{PENGEMBANGAN LANJUTAN}
-
-\subsection{Machine Learning Integration}
-\begin{itemize}
-    \item Prediksi koefisien berdasarkan material
-    \item Klasifikasi otomatis jenis bola
-    \item Optimasi parameter deteksi menggunakan AI
-\end{itemize}
-
-\subsection{IoT Dashboard}
-\begin{itemize}
-    \item Web-based monitoring dashboard
-    \item Database storage untuk historical data
-    \item Multi-sensor integration dan comparison
-\end{itemize}
-
-\subsection{Mobile Application}
-\begin{itemize}
-    \item Android/iOS app development
-    \item Bluetooth/WiFi Direct communication
-    \item Portable measurement system
-\end{itemize}
-
-\section{REFERENSI}
-
-\begin{enumerate}
-    \item Halliday, D., Resnick, R., \& Walker, J. (2017). \textit{Fundamentals of Physics}. 11th Edition. Wiley.
-    
-    \item Schwartz, M. (2016). \textit{Internet of Things with ESP8266}. Packt Publishing.
-    
-    \item McKinney, W. (2017). \textit{Python for Data Analysis}. 2nd Edition. O'Reilly Media.
-    
-    \item IEEE Standard for Internet of Things (IoT) Terminology. (2018). IEEE Std 2413-2019.
-    
-    \item MQTT Version 3.1.1 OASIS Standard. (2014). OASIS.
-    
-    \item Ultrasonic Sensor HC-SR04 Datasheet. (2020). ETC Electronic.
-    
-    \item Arduino Official Documentation. \url{https://docs.arduino.cc/}
-    
-    \item Python Official Documentation. \url{https://docs.python.org/3/}
-\end{enumerate}
-
-\section{LAMPIRAN}
-
-\subsection{Lampiran A: Pinout Diagram ESP8266}
-\begin{figure}[H]
-\centering
-\begin{verbatim}
-ESP8266 NodeMCU Pinout:
-┌─────────────────┐
-│ A0        D0    │
-│ RSV       D1 ──┼── TRIG (HC-SR04)
-│ RSV       D2 ──┼── ECHO (HC-SR04)  
-│ SD3       D3    │
-│ SD2       D4    │
-│ SD1       3V3 ──┼── VCC (HC-SR04)
-│ CMD       GND ──┼── GND (HC-SR04)
-│ SD0       D5    │
-│ CLK       D6    │
-│ GND       D7    │
-│ 3V3       D8    │
-│ EN        RX    │
-│ RST       TX    │
-│ GND       GND   │
-│ VIN       3V3   │
-└─────────────────┘
-\end{verbatim}
-\caption{Diagram Pinout ESP8266 NodeMCU}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Desain Alat.png}
+    \caption{Desain Alat}
+    \label{fig:desain-alat}
 \end{figure}
 
-\subsection{Lampiran B: Format Pesan MQTT}
-\begin{lstlisting}[language=json, caption=Format JSON MQTT Message]
-{
-  "timestamp": 1.23,
-  "distance": 25.4,
-  "device": "ESP8266_HCSR04",
-  "uptime": 12345,
-  "reading_time": 1.23
-}
-\end{lstlisting}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Rangkaian Elektronika.png}
+    \caption{Rangkaian Elektronika}
+    \label{fig:rangkaian-elektronika}
+\end{figure}
 
-\subsection{Lampiran C: Rumus Fisika}
-\begin{align}
-\text{Koefisien Restitusi:} \quad e &= \sqrt{\frac{h_2}{h_1}} \\
-\text{Energi Kinetik:} \quad E_k &= \frac{1}{2}mv^2 \\
-\text{Energi Potensial:} \quad E_p &= mgh \\
-\text{Kecepatan jatuh:} \quad v &= \sqrt{2gh} \\
-\text{Waktu jatuh:} \quad t &= \sqrt{\frac{2h}{g}}
-\end{align}
+\section{Data dan Analisis Pengujian}
 
-\subsection{Lampiran D: Kode Program ESP8266}
-\lstinputlisting[language=C++, caption=Kode Program ESP8266 (main.cpp)]{src/main.cpp}
-
-\subsection{Lampiran E: Kode Program Python}
-\lstinputlisting[language=Python, caption=Kode Program Python (main.py), firstline=1, lastline=50]{python/main.py}
-
-\vfill
-\centering
-\textbf{© 2024 - Modul Praktikum Koefisien Restitusi IoT}\\
-\textbf{Program Studi Teknik Elektro}
+\section{Referensi}
 
 \end{document}
