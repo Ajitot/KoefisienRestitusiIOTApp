@@ -2,267 +2,235 @@
 
 Aplikasi IoT untuk mengukur koefisien restitusi bola menggunakan sensor ultrasonik HC-SR04 dengan ESP8266/ESP32 dan interface Python GUI.
 
-Sistem ini mengukur koefisien restitusi (coefficient of restitution) dengan cara:
-1. Mendeteksi jarak bola yang memantul menggunakan sensor HC-SR04
-2. Mengirim data secara real-time melalui MQTT
-3. Menganalisis data bouncing untuk menghitung koefisien restitusi
-4. Menampilkan grafik dan hasil perhitungan di aplikasi Python
+<table>
+  <tr>
+    <td style="text-align:center;">
+      <figure>
+        <img src="https://github.com/Ajitot/KoefisienRestitusiIOTApp/blob/mqtt-lastest-version/images/Tampilan%20GUI.png"
+             style="width:100%; height:auto;" alt="Tampilan GUI">
+        <figcaption>GUI saat pertama dijalankan</figcaption>
+      </figure>
+    </td>
+    <td style="text-align:center;">
+      <figure>
+        <img src="https://github.com/Ajitot/KoefisienRestitusiIOTApp/blob/mqtt-lastest-version/images/gui-akuisisi.png"
+             style="width:100%; height:auto;" alt="GUI Akuisisi">
+        <figcaption>GUI saat mengakuisisi data</figcaption>
+      </figure>
+    </td>
+  </tr>
+</table>
 
-<img src="https://github.com/Ajitot/KoefisienRestitusiIOTApp/blob/mqtt-lastest-version/images/Ilustrasi%20Alat.png"
-     style="width:50%; max-width:100%; height:auto; display:block; margin:auto;"
-     alt="Ilustrasi Alat">
+## Daftar Isi
+1. [Struktur Proyek](#struktur-proyek)
+2. [Fitur Utama](#fitur-utama)
+3. [Ringkasan Sistem](#ringkasan-sistem)
+4. [Alat dan Bahan](#alat-dan-bahan)
+5. [Skematik dan Koneksi](#skematik-dan-koneksi)
+6. [Arsitektur dan Alur Sistem](#arsitektur-dan-alur-sistem)
+7. [Cara Penggunaan](#cara-penggunaan)
+8. [Alur Percobaan](#alur-percobaan)
+9. [Data Yang Dihasilkan](#data-yang-dihasilkan)
+10. [Kontribusi](#kontribusi)
 
+---
+
+## Struktur Proyek
+
+- [espcode](./espcode/) &mdash; Kode ESP8266/ESP32 (C++)
+- [python](./python/) &mdash; Aplikasi Python GUI (main.py)
+- [data](./data/) &mdash; Data output yang diperoleh seluruh percobaan
+- [images](./images/) &mdash; Ilustrasi alat & skematik
+
+
+---
+## Fitur Utama
+
+- Deteksi pantulan otomatis (`find_peaks`)
+- Hitung koefisien restitusi: `e = √(h₂/h₁)`
+- Grafik real-time & tabel data
+- Filter noise (Butterworth)
+- Kontrol ESP: START/STOP, interval sampling
+- Export data: Excel, PNG, TXT
+
+---
+
+## Ringkasan Sistem
+
+1. **Sensor HC-SR04** mendeteksi jarak bola memantul.
+2. **ESP8266/ESP32** mengirim data ke MQTT Broker.
+3. **Aplikasi Python** menerima & menganalisis data, menghitung koefisien restitusi, dan menampilkan grafik real-time.
+
+<table>
+  <tr>
+    <td style="text-align:center;">
+      <figure>
+        <img src="https://github.com/Ajitot/KoefisienRestitusiIOTApp/blob/mqtt-lastest-version/images/Ilustrasi%20Alat.png"
+             style="width:100%; height:auto;" alt="Ilustrasi Alat">
+        <figcaption>Ilustrasi alat secara skematik</figcaption>
+      </figure>
+    </td>
+    <td style="text-align:center;">
+      <figure>
+        <img src="https://github.com/Ajitot/KoefisienRestitusiIOTApp/blob/mqtt-lastest-version/images/alat.png"
+             style="width:100%; height:auto;" alt="Foto Alat">
+        <figcaption>Foto alat yang telah dirakit</figcaption>
+      </figure>
+    </td>
+  </tr>
+</table>
+
+---
 
 ## Alat dan Bahan
 
 ### Hardware
-- **ESP8266** (NodeMCU/Wemos D1) atau **ESP32**
-- **Sensor HC-SR04** (ultrasonik distance sensor)
-- **Breadboard** dan **kabel jumper**
-- **Bola** untuk testing (ping pong ball, rubber ball, dll)
-- **Power supply** untuk ESP (USB cable)
+- ESP8266 (NodeMCU/Wemos D1) / ESP32
+- Sensor HC-SR04
+- Breadboard & kabel jumper
+- Bola (🏓 Bola Tenis Meja, 🎾 Bola Tenis Lapangan, ⚽ Bola Sepak Karet, 🔴 Bola Bekel, 🔵 Bola Plastik)
+- Power supply
 
 ### Software
-- **Arduino IDE** atau **PlatformIO** untuk programming ESP
-- **Python 3.7+** dengan libraries:
-  - `tkinter` (GUI)
-  - `matplotlib` (plotting)
-  - `pandas` (data processing)
-  - `scipy` (signal processing)
-  - `paho-mqtt` (MQTT client)
-  - `numpy` (numerical computing)
-  - `json` (data parsing)
-
-### Koneksi Hardware
-
-#### Skematik Rangkaian
-
-<div style="display:flex; justify-content:center;">  
-  <img src="https://github.com/Ajitot/KoefisienRestitusiIOTApp/blob/mqtt-lastest-version/images/Skematik%20Rangkaian.png"
-       style="width:50%; max-width:100%; height:auto;"
-       alt="Skematik Rangkaian">
-</div>
-
-
-#### ESP8266 (NodeMCU)
-|HC-SR04 | NodeMCU |
-|---|---|
-|VCC   | 3.3V/5V |
-| GND   |    GND |
-|Trig  |    D1 (GPIO5) |
-| Echo  |    D2 (GPIO4) |
-
-## Struktur Kode
-
-```
-KoefisienRestitusiIOTApp/
-├── espcode/
-│   └── espcode.h              # Kode ESP8266/ESP32
-├── python/
-│   └── main.py              # Aplikasi Python GUI
-└── readme.md                # Dokumentasi ini
-```
-
-
-## Arsitektur Sistem
-<details>
-  <summary>
-    Detail
-  </summary>
-
-### Diagram Komunikasi MQTT
-
-```mermaid
-graph LR
-    A[Python App<br/>🖥️ GUI & Analysis] 
-    B[MQTT Broker<br/>☁️ HiveMQ Cloud]
-    C[ESP8266<br/>📡 HC-SR04 Sensor]
-
-    A -->|Commands| B
-    B -->|Forward| C  
-    C -->|Sensor Data| B
-    B -->|Data| A
-
-    %% Styling
-    classDef python fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef mqtt fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef esp fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
-
-    class A python
-    class B mqtt
-    class C esp
-```
-
-### Alur Komunikasi
-
-1. **📤 Python → Broker**: Kirim perintah START/STOP
-2. **🔄 Broker → ESP8266**: Teruskan perintah ke sensor
-3. **📡 ESP8266 → Broker**: Kirim data jarak JSON
-4. **📥 Broker → Python**: Terima data untuk analisis
-
-**Topics MQTT:**
-- `sensor/distance/cmd` - Perintah kontrol
-- `sensor/distance` - Data sensor
-
-## Flowchart Program
-
-### Program Python
-
-```mermaid
-flowchart TD
-    Start([🚀 Start Python App]) --> Init[🔧 Initialize GUI<br/>Setup MQTT<br/>Connect Broker]
-    Init --> Loop[🔄 Main Event Loop]
-    
-    Loop --> MQTTCheck{📨 MQTT<br/>Message?}
-    Loop --> UserCheck{👤 User<br/>Action?}
-    
-    MQTTCheck -->|Yes| Parse[📋 Parse JSON<br/>Validate Data]
-    Parse --> Collecting{📊 Collecting<br/>Data?}
-    Collecting -->|Yes| Store[💾 Store Data<br/>Update Plot]
-    
-    UserCheck -->|Yes| Handle[🎛️ Handle User<br/>Input]
-    Handle --> Analyze{🧮 Calculate<br/>Coefficient?}
-    Analyze -->|Yes| Calc[🔍 Detect Bounces<br/>Calculate e]
-    
-    Store --> Update[🖥️ Update GUI<br/>Display Results]
-    Calc --> Update
-    
-    MQTTCheck -->|No| Update
-    UserCheck -->|No| Update
-    Collecting -->|No| Update
-    Analyze -->|No| Update
-    
-    Update -.->|Loop Back| Loop
-    Update --> End([🛑 Exit Application])
-
-    %% Styling
-    classDef startEnd fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
-    classDef process fill:#bbdefb,stroke:#1976d2,stroke-width:2px
-    classDef decision fill:#fff9c4,stroke:#f57f17,stroke-width:2px
-    classDef update fill:#f8bbd9,stroke:#c2185b,stroke-width:2px
-
-    class Start,End startEnd
-    class Init,Parse,Store,Handle,Calc process
-    class MQTTCheck,UserCheck,Collecting,Analyze decision
-    class Update update
-```
-
-### Program ESP8266
-
-```mermaid
-flowchart TD
-    Start([🚀 Start ESP8266]) --> InitHW[🔧 Initialize<br/>Pins & Serial]
-    InitHW --> WiFi[📶 Connect WiFi]
-    WiFi --> MQTT[📡 Connect MQTT<br/>Subscribe Topics]
-    MQTT --> MainLoop[🔄 Main Loop]
-    
-    MainLoop --> CmdCheck{📨 Command<br/>Received?}
-    MainLoop --> ReadCheck{📊 Reading Mode &<br/>Interval?}
-    
-    CmdCheck -->|Yes| ParseCmd[📋 Parse Command]
-    ParseCmd --> CmdType{🎛️ Command Type?}
-    
-    CmdType -->|START| StartRead[▶️ Set Reading TRUE]
-    CmdType -->|STOP| StopRead[⏹️ Set Reading FALSE]
-    
-    ReadCheck -->|Yes| Sensor[📏 Read HC-SR04]
-    Sensor --> Validate[✅ Validate Data]
-    Validate --> JSON[📋 Create JSON]
-    JSON --> Publish[📤 Publish MQTT]
-    
-    StartRead -.->|Loop Back| MainLoop
-    StopRead -.->|Loop Back| MainLoop
-    Publish -.->|Loop Back| MainLoop
-    
-    CmdCheck -->|No| MainLoop
-    ReadCheck -->|No| MainLoop
-
-    %% Styling
-    classDef startEnd fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
-    classDef process fill:#bbdefb,stroke:#1976d2,stroke-width:2px
-    classDef decision fill:#fff9c4,stroke:#f57f17,stroke-width:2px
-    classDef action fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px
-
-    class Start startEnd
-    class InitHW,WiFi,MQTT,ParseCmd,Sensor,Validate,JSON,Publish process
-    class CmdCheck,ReadCheck,CmdType decision
-    class StartRead,StopRead action
-```
-</details>
-
-## Fitur Utama
-
-### 🔬 Analisis Real-time
-- Deteksi pantulan otomatis menggunakan algoritma `find_peaks`
-- Perhitungan koefisien restitusi: `e = √(h₂/h₁)`
-- Analisis statistik komprehensif
-- Klasifikasi material berdasarkan elastisitas
-
-### 📊 Visualisasi Data
-- Grafik real-time tinggi bola vs waktu
-- Tabel data sensor 50 terakhir
-- Penandaan puncak pantulan otomatis
-- Filter noise dengan low-pass Butterworth
-
-### 🎛️ Kontrol ESP8266
-- Perintah START/STOP pembacaan
-- Konfigurasi interval sampling (50-5000ms)
-- Monitor status koneksi WiFi dan MQTT
-- Validasi data sensor (2-400cm)
-
-### 💾 Export Data
-- Format Excel (.xlsx) untuk analisis statistik
-- Format PNG untuk dokumentasi grafik
-- File analisis text lengkap dengan hasil perhitungan
-- Metadata percobaan dan konfigurasi
-
-## Spesifikasi Teknis
-
-| Parameter | Nilai |
-|-----------|-------|
-| **Sensor Range** | 2-400 cm |
-| **Sampling Rate** | 50-5000 ms (konfigurasi) |
-| **Formula Analisis** | e = √(h₂/h₁) |
-| **MQTT Topics** | sensor/distance, sensor/distance/cmd |
-| **Protokol Komunikasi** | MQTT over WiFi |
-| **Broker Cloud** | HiveMQ (broker.hivemq.com) |
-
-## Jenis Bola yang Didukung
-
-- 🏓 **Bola Tenis Meja** - Elastisitas tinggi
-- 🎾 **Bola Tenis Lapangan** - Elastisitas sedang-tinggi  
-- ⚽ **Bola Sepak Karet** - Elastisitas sedang
-- 🔴 **Bola Bekel** - Elastisitas tinggi
-- 🔵 **Bola Plastik** - Elastisitas rendah-sedang
-
-## Persyaratan Sistem
-
-### Hardware
-- ESP8266 (NodeMCU/Wemos D1 Mini)
-- Sensor HC-SR04
-- Breadboard dan kabel jumper
-- Power supply 5V
-
-### Software  
-- Python 3.8+
-- Libraries: tkinter, matplotlib, pandas, scipy, paho-mqtt, numpy
-- Arduino IDE dengan library WiFi dan PubSubClient
-- Koneksi internet untuk MQTT broker
-
-## Cara Penggunaan
-
-1. **Setup Hardware**: Hubungkan HC-SR04 ke ESP8266
-2. **Upload Code**: Flash program ESP8266 dengan konfigurasi WiFi
-3. **Run Python**: Jalankan aplikasi monitoring Python
-4. **Kalibrasi**: Atur tinggi sensor dari lantai
-5. **Mulai Percobaan**: Klik "Mulai Pengumpulan" dan lepas bola
-6. **Analisis**: Sistem otomatis menghitung koefisien restitusi
-7. **Export**: Simpan hasil dalam format Excel/PNG/Text
-
-## Kontribusi
-
-Sistem ini dikembangkan untuk penelitian dan edukasi fisika. Kontribusi dan pengembangan lebih lanjut sangat diharapkan untuk meningkatkan akurasi dan fitur analisis.
+- Arduino IDE / PlatformIO
+- Python 3.7+ dengan: `tkinter`, `matplotlib`, `pandas`, `scipy`, `paho-mqtt`, `numpy`
 
 ---
 
-*Dikembangkan dengan ❤️ untuk fisika dan IoT*
+## Skematik dan Koneksi
+
+<table border="1" style="border-collapse:collapse; text-align:center;">
+  <tr>
+    <th>HC-SR04</th>
+    <th>NodeMCU</th>
+    <th rowspan="5" style="padding:10px;">
+      <img src="https://github.com/Ajitot/KoefisienRestitusiIOTApp/raw/mqtt-lastest-version/images/Skematik%20Rangkaian.png"
+           alt="Skematik Rangkaian"
+           style="width:300px; height:auto;" />
+      <div style="font-size:small; margin-top:5px;">Skematik rangkaian HC-SR04 ke NodeMCU</div>
+    </th>
+  </tr>
+  <tr>
+    <td>VCC</td>
+    <td>3.3V / 5V</td>
+  </tr>
+  <tr>
+    <td>GND</td>
+    <td>GND</td>
+  </tr>
+  <tr>
+    <td>Trig</td>
+    <td>D1 (GPIO5)</td>
+  </tr>
+  <tr>
+    <td>Echo</td>
+    <td>D2 (GPIO4)</td>
+  </tr>
+</table>
+
+
+---
+
+## Arsitektur dan Alur Sistem
+
+<table style="border-collapse:collapse; width:100%; text-align:center;">
+  <caption style="font-weight:bold; padding:10px;">Koneksi MQTT antara NodeMCU dan Python</caption>
+  <tr>
+    <td>
+      <figure>
+        <img src="https://github.com/Ajitot/KoefisienRestitusiIOTApp/raw/mqtt-lastest-version/images/ESP8266-SerialMonitor-MQTT.png"
+             alt="Serial Monitor ESP8266"
+             style="width:100%; height:auto;" />
+        <figcaption>Serial Monitor ESP8266 saat mengirim data via MQTT</figcaption>
+      </figure>
+    </td>
+    <td>
+      <figure>
+        <img src="https://github.com/Ajitot/KoefisienRestitusiIOTApp/raw/mqtt-lastest-version/images/Python-MQTT.png"
+             alt="Python MQTT Client"
+             style="width:100%; height:auto;" />
+        <figcaption>Client Python menerima data dari NodeMCU melalui MQTT</figcaption>
+      </figure>
+    </td>
+  </tr>
+</table>
+
+- **Komunikasi MQTT**:  
+  - `sensor/distance/cmd` (kontrol)
+  - `sensor/distance` (data sensor)
+- **Broker**: HiveMQ Cloud
+
+<details>
+<summary>Diagram Komunikasi & Flowchart</summary>
+
+```mermaid
+graph LR
+    A[Python App] -->|Commands| B[MQTT Broker]
+    B -->|Forward| C[ESP8266]
+    C -->|Sensor Data| B
+    B -->|Data| A
+```
+
+```mermaid
+flowchart TD
+    Start([Start Python App]) --> Init[Init GUI & MQTT]
+    Init --> Loop[Main Loop]
+    Loop --> MQTTCheck{MQTT Msg?}
+    MQTTCheck -->|Yes| Parse[Parse JSON]
+    Parse --> Store[Store Data & Plot]
+    Loop --> UserCheck{User Action?}
+    UserCheck -->|Yes| Handle[Handle Input]
+    Handle --> Calc[Calculate e]
+    Store --> Update[Update GUI]
+    Calc --> Update
+    Update -.-> Loop
+```
+</details>
+
+
+---
+
+## Cara Penggunaan
+
+1. **Rakit hardware** sesuai skematik.
+2. **Upload** kode ke ESP ([espcode](./espcode/)).
+3. **Install** library python yang diperlukan ([requirements.txt](requirements.txt)) di terminal dengan _command_ `pip install -r requirements.txt`
+4. **Jalankan** aplikasi Python ([python/main.py](./python/main.py)).
+5. **Kalibrasi** tinggi sensor.
+6. **Mulai eksperimen** & analisis otomatis.
+7. **Export** hasil sesuai kebutuhan.
+
+---
+
+## Alur Percobaan
+
+> Setiap Objek dilakukan pengukuran ketinggian oleh alat dengan 20 kali percobaan lalu data yang dihasilkan dihitung standar deviasi setiap objek untuk mengetahui besaran penyimpangan dan besar koefisien restitusi masing-masing objek
+
+| Objek | Jumlah Percobaan | 
+| --- | --- |
+| 🏓 **Bola Tenis Meja** | 20 |
+| 🎾 **Bola Tenis Lapangan** | 20 |
+| ⚽ **Bola Sepak Karet** | 20 |
+| 🔴 **Bola Bekel** | 20 |
+| 🔵 **Bola Plastik** | 20 |
+
+
+## Data Yang Dihasilkan
+
+| Nama | Jenis File | Direktori | Total File | Keterangan |
+| --- | --- |--- | --- | --- |
+| Data Ketinggian | Excel (.xlsx) | [Data Percobaan](/data/data-percobaan) | 100 (20x5 objek) | Data ketinggian setiap percobaan |
+| Grafik Ketinggian | Gambar (.png) | [Grafik Percobaan](/data/grafik-percobaan) | 100 (20x5 objek) | Grafik dari data ketinggian |
+| Analisis Percobaan | Text (.txt) | [Analisis Percobaan](/data/analisis-percobaan) | 100 (20x5 objek) | Analisis dari setiap percobaan |
+| Ringkasan Statistik | Excel, Gambar | [Ringkasan Statistik](/data/ringkasan=statistik) | 10 (2x5 objek) | Grafik dan tabel perhitungan standar deviasi dan koefisien restitusi seluruh percobaan pada setiap objek |
+| Tabel LaTeX | LaTeX (.tex) | [Tabel LaTeX](/data/tabel-latex) | 100 | Konversi data tabel excel ke latex untuk kebutuhan dokumen latex |
+
+---
+
+## Kontribusi
+
+Sistem ini dikembangkan untuk edukasi & penelitian fisika. Kontribusi sangat diharapkan!
+
+---
+
+*Dikembangkan dengan ❤️ untuk fisika & IoT*
