@@ -1,0 +1,103 @@
+
+============================================================
+    ANALISIS KOEFISIEN RESTITUSI - BOLA TENIS MEJA
+============================================================
+
+PENGATURAN PENGUKURAN:
+  • Jenis Bola yang Diuji        : Bola Tenis Meja
+  • Tinggi Sensor dari Lantai    : 35.0 cm
+  • Ambang Deteksi Pantulan      : 15.0 cm
+  • Selisih Tinggi Minimum       : 0.1 cm
+  • Jarak Minimum Pantulan       : 1 titik data
+  • Total Titik Data Terkumpul   : 53
+  • Durasi Pengukuran            : 10.33 detik
+  • Waktu Mulai dari             : 0.00 detik (direset setiap mulai)
+
+────────────────────────────────────────────────────────────
+HASIL DETEKSI PANTULAN:
+  • Jumlah Pantulan Terdeteksi   : 5
+  • Pantulan Valid (>= 15.0cm) : 5
+  • Trend Menurun (Natural)      : Ya
+  • Tinggi Pantulan (cm)         : 33.00, 32.00, 30.00, 27.00, 19.00
+  • Waktu Pantulan (s)           : 1.40, 3.40, 5.11, 6.91, 8.52
+  • Interval Waktu (s)           : 2.000, 1.710, 1.800, 1.614
+
+────────────────────────────────────────────────────────────
+PERHITUNGAN KOEFISIEN:
+  Pantulan 1 → 2 (VALID - MENURUN):
+    Tinggi: 33.00 cm → 32.00 cm
+    Penurunan: 1.00 cm
+    Koefisien: e = √(32.00/33.00) = 0.985
+    Interval Waktu: 2.000 detik
+    Energi Tersisa: 97.0%
+
+  Pantulan 2 → 3 (VALID - MENURUN):
+    Tinggi: 32.00 cm → 30.00 cm
+    Penurunan: 2.00 cm
+    Koefisien: e = √(30.00/32.00) = 0.968
+    Interval Waktu: 1.710 detik
+    Energi Tersisa: 93.8%
+
+  Pantulan 3 → 4 (VALID - MENURUN):
+    Tinggi: 30.00 cm → 27.00 cm
+    Penurunan: 3.00 cm
+    Koefisien: e = √(27.00/30.00) = 0.949
+    Interval Waktu: 1.800 detik
+    Energi Tersisa: 90.0%
+
+  Pantulan 4 → 5 (VALID - MENURUN):
+    Tinggi: 27.00 cm → 19.00 cm
+    Penurunan: 8.00 cm
+    Koefisien: e = √(19.00/27.00) = 0.839
+    Interval Waktu: 1.614 detik
+    Energi Tersisa: 70.4%
+
+────────────────────────────────────────────────────────────
+RINGKASAN STATISTIK:
+  • Pasangan Pantulan Valid      : 4 dari 4 total
+  • Koefisien Rata-rata (e)      : 0.9351
+  • Standar Deviasi              : 0.0570
+  • Koefisien Minimum            : 0.8389
+  • Koefisien Maksimum           : 0.9847
+  • Rentang Koefisien            : 0.1459
+
+ANALISIS ENERGI:
+  • Retensi Energi Rata-rata     : 87.45%
+  • Kehilangan Energi Rata-rata  : 12.55%
+  • Tingkat Disipasi Energi      : 12.6% per pantulan
+
+────────────────────────────────────────────────────────────
+KLASIFIKASI MATERIAL:
+  • Perkiraan Jenis Material     : Super Ball / Elastisitas Tinggi
+  • Kualitas Pantulan            : Sangat Baik
+  • Rating Elastisitas           : 93.5%
+
+────────────────────────────────────────────────────────────
+HASIL UNTUK BOLA TENIS MEJA:
+  • Koefisien Restitusi          : 0.935
+  • Kualitas Pantulan            : Sangat Baik
+  • Retensi Energi               : 87.4%
+
+────────────────────────────────────────────────────────────
+PERBANDINGAN TEORITIS:
+  • Tumbukan Elastis Sempurna    : e = 1.000 (100% retensi energi)
+  • Bola Tenis Meja Anda          : e = 0.935 (87.4% retensi energi)
+  • Tumbukan Inelastis Sempurna  : e = 0.000 (0% retensi energi)
+
+CATATAN FISIKA:
+  • Koefisien restitusi (e) mengukur elastisitas tumbukan
+  • e = 1: Tumbukan elastis sempurna (tanpa kehilangan energi)
+  • e = 0: Tumbukan inelastis sempurna (kehilangan energi maksimum)
+  • Material nyata umumnya memiliki 0.1 < e < 0.95
+  • Koefisien tinggi berarti karakteristik pantulan bola lebih baik
+
+PENGATURAN FILTER:
+  • Tinggi minimum pantulan: 15.0cm
+  • Selisih tinggi minimum: 0.1cm
+  • Filter trend menurun: AKTIF (mengabaikan puncak yang naik)
+  • Filter ini memastikan hanya pantulan natural yang dihitung
+
+============================================================
+Analisis Bola Tenis Meja selesai pada: 2025-07-16 15:24:54
+Waktu pengukuran: 0.00 - 10.33 detik
+============================================================

@@ -1,0 +1,110 @@
+
+============================================================
+    ANALISIS KOEFISIEN RESTITUSI - BOLA TENIS MEJA
+============================================================
+
+PENGATURAN PENGUKURAN:
+  • Jenis Bola yang Diuji        : Bola Tenis Meja
+  • Tinggi Sensor dari Lantai    : 35.0 cm
+  • Ambang Deteksi Pantulan      : 15.0 cm
+  • Selisih Tinggi Minimum       : 0.1 cm
+  • Jarak Minimum Pantulan       : 1 titik data
+  • Total Titik Data Terkumpul   : 63
+  • Durasi Pengukuran            : 11.42 detik
+  • Waktu Mulai dari             : 0.00 detik (direset setiap mulai)
+
+────────────────────────────────────────────────────────────
+HASIL DETEKSI PANTULAN:
+  • Jumlah Pantulan Terdeteksi   : 6
+  • Pantulan Valid (>= 15.0cm) : 6
+  • Trend Menurun (Natural)      : Ya
+  • Tinggi Pantulan (cm)         : 33.00, 32.00, 31.00, 29.00, 25.00, 19.00
+  • Waktu Pantulan (s)           : 1.80, 3.81, 5.71, 7.51, 9.32, 11.12
+  • Interval Waktu (s)           : 2.003, 1.909, 1.800, 1.801, 1.808
+
+────────────────────────────────────────────────────────────
+PERHITUNGAN KOEFISIEN:
+  Pantulan 1 → 2 (VALID - MENURUN):
+    Tinggi: 33.00 cm → 32.00 cm
+    Penurunan: 1.00 cm
+    Koefisien: e = √(32.00/33.00) = 0.985
+    Interval Waktu: 2.003 detik
+    Energi Tersisa: 97.0%
+
+  Pantulan 2 → 3 (VALID - MENURUN):
+    Tinggi: 32.00 cm → 31.00 cm
+    Penurunan: 1.00 cm
+    Koefisien: e = √(31.00/32.00) = 0.984
+    Interval Waktu: 1.909 detik
+    Energi Tersisa: 96.9%
+
+  Pantulan 3 → 4 (VALID - MENURUN):
+    Tinggi: 31.00 cm → 29.00 cm
+    Penurunan: 2.00 cm
+    Koefisien: e = √(29.00/31.00) = 0.967
+    Interval Waktu: 1.800 detik
+    Energi Tersisa: 93.5%
+
+  Pantulan 4 → 5 (VALID - MENURUN):
+    Tinggi: 29.00 cm → 25.00 cm
+    Penurunan: 4.00 cm
+    Koefisien: e = √(25.00/29.00) = 0.928
+    Interval Waktu: 1.801 detik
+    Energi Tersisa: 86.2%
+
+  Pantulan 5 → 6 (VALID - MENURUN):
+    Tinggi: 25.00 cm → 19.00 cm
+    Penurunan: 6.00 cm
+    Koefisien: e = √(19.00/25.00) = 0.872
+    Interval Waktu: 1.808 detik
+    Energi Tersisa: 76.0%
+
+────────────────────────────────────────────────────────────
+RINGKASAN STATISTIK:
+  • Pasangan Pantulan Valid      : 5 dari 5 total
+  • Koefisien Rata-rata (e)      : 0.9473
+  • Standar Deviasi              : 0.0429
+  • Koefisien Minimum            : 0.8718
+  • Koefisien Maksimum           : 0.9847
+  • Rentang Koefisien            : 0.1130
+
+ANALISIS ENERGI:
+  • Retensi Energi Rata-rata     : 89.74%
+  • Kehilangan Energi Rata-rata  : 10.26%
+  • Tingkat Disipasi Energi      : 10.3% per pantulan
+
+────────────────────────────────────────────────────────────
+KLASIFIKASI MATERIAL:
+  • Perkiraan Jenis Material     : Super Ball / Elastisitas Tinggi
+  • Kualitas Pantulan            : Sangat Baik
+  • Rating Elastisitas           : 94.7%
+
+────────────────────────────────────────────────────────────
+HASIL UNTUK BOLA TENIS MEJA:
+  • Koefisien Restitusi          : 0.947
+  • Kualitas Pantulan            : Sangat Baik
+  • Retensi Energi               : 89.7%
+
+────────────────────────────────────────────────────────────
+PERBANDINGAN TEORITIS:
+  • Tumbukan Elastis Sempurna    : e = 1.000 (100% retensi energi)
+  • Bola Tenis Meja Anda          : e = 0.947 (89.7% retensi energi)
+  • Tumbukan Inelastis Sempurna  : e = 0.000 (0% retensi energi)
+
+CATATAN FISIKA:
+  • Koefisien restitusi (e) mengukur elastisitas tumbukan
+  • e = 1: Tumbukan elastis sempurna (tanpa kehilangan energi)
+  • e = 0: Tumbukan inelastis sempurna (kehilangan energi maksimum)
+  • Material nyata umumnya memiliki 0.1 < e < 0.95
+  • Koefisien tinggi berarti karakteristik pantulan bola lebih baik
+
+PENGATURAN FILTER:
+  • Tinggi minimum pantulan: 15.0cm
+  • Selisih tinggi minimum: 0.1cm
+  • Filter trend menurun: AKTIF (mengabaikan puncak yang naik)
+  • Filter ini memastikan hanya pantulan natural yang dihitung
+
+============================================================
+Analisis Bola Tenis Meja selesai pada: 2025-07-16 15:29:44
+Waktu pengukuran: 0.00 - 11.42 detik
+============================================================

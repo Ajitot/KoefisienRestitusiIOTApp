@@ -1,0 +1,89 @@
+
+============================================================
+    ANALISIS KOEFISIEN RESTITUSI - BOLA SEPAK KARET
+============================================================
+
+PENGATURAN PENGUKURAN:
+  • Jenis Bola yang Diuji        : Bola Sepak Karet
+  • Tinggi Sensor dari Lantai    : 35.0 cm
+  • Ambang Deteksi Pantulan      : 15.0 cm
+  • Selisih Tinggi Minimum       : 0.1 cm
+  • Jarak Minimum Pantulan       : 1 titik data
+  • Total Titik Data Terkumpul   : 40
+  • Durasi Pengukuran            : 9.33 detik
+  • Waktu Mulai dari             : 0.00 detik (direset setiap mulai)
+
+────────────────────────────────────────────────────────────
+HASIL DETEKSI PANTULAN:
+  • Jumlah Pantulan Terdeteksi   : 3
+  • Pantulan Valid (>= 15.0cm) : 3
+  • Trend Menurun (Natural)      : Ya
+  • Tinggi Pantulan (cm)         : 33.00, 30.00, 24.00
+  • Waktu Pantulan (s)           : 1.61, 3.51, 5.42
+  • Interval Waktu (s)           : 1.903, 1.912
+
+────────────────────────────────────────────────────────────
+PERHITUNGAN KOEFISIEN:
+  Pantulan 1 → 2 (VALID - MENURUN):
+    Tinggi: 33.00 cm → 30.00 cm
+    Penurunan: 3.00 cm
+    Koefisien: e = √(30.00/33.00) = 0.953
+    Interval Waktu: 1.903 detik
+    Energi Tersisa: 90.9%
+
+  Pantulan 2 → 3 (VALID - MENURUN):
+    Tinggi: 30.00 cm → 24.00 cm
+    Penurunan: 6.00 cm
+    Koefisien: e = √(24.00/30.00) = 0.894
+    Interval Waktu: 1.912 detik
+    Energi Tersisa: 80.0%
+
+────────────────────────────────────────────────────────────
+RINGKASAN STATISTIK:
+  • Pasangan Pantulan Valid      : 2 dari 2 total
+  • Koefisien Rata-rata (e)      : 0.9239
+  • Standar Deviasi              : 0.0295
+  • Koefisien Minimum            : 0.8944
+  • Koefisien Maksimum           : 0.9535
+  • Rentang Koefisien            : 0.0590
+
+ANALISIS ENERGI:
+  • Retensi Energi Rata-rata     : 85.37%
+  • Kehilangan Energi Rata-rata  : 14.63%
+  • Tingkat Disipasi Energi      : 14.6% per pantulan
+
+────────────────────────────────────────────────────────────
+KLASIFIKASI MATERIAL:
+  • Perkiraan Jenis Material     : Super Ball / Elastisitas Tinggi
+  • Kualitas Pantulan            : Sangat Baik
+  • Rating Elastisitas           : 92.4%
+
+────────────────────────────────────────────────────────────
+HASIL UNTUK BOLA SEPAK KARET:
+  • Koefisien Restitusi          : 0.924
+  • Kualitas Pantulan            : Sangat Baik
+  • Retensi Energi               : 85.4%
+
+────────────────────────────────────────────────────────────
+PERBANDINGAN TEORITIS:
+  • Tumbukan Elastis Sempurna    : e = 1.000 (100% retensi energi)
+  • Bola Sepak Karet Anda          : e = 0.924 (85.4% retensi energi)
+  • Tumbukan Inelastis Sempurna  : e = 0.000 (0% retensi energi)
+
+CATATAN FISIKA:
+  • Koefisien restitusi (e) mengukur elastisitas tumbukan
+  • e = 1: Tumbukan elastis sempurna (tanpa kehilangan energi)
+  • e = 0: Tumbukan inelastis sempurna (kehilangan energi maksimum)
+  • Material nyata umumnya memiliki 0.1 < e < 0.95
+  • Koefisien tinggi berarti karakteristik pantulan bola lebih baik
+
+PENGATURAN FILTER:
+  • Tinggi minimum pantulan: 15.0cm
+  • Selisih tinggi minimum: 0.1cm
+  • Filter trend menurun: AKTIF (mengabaikan puncak yang naik)
+  • Filter ini memastikan hanya pantulan natural yang dihitung
+
+============================================================
+Analisis Bola Sepak Karet selesai pada: 2025-07-16 16:07:52
+Waktu pengukuran: 0.00 - 9.33 detik
+============================================================

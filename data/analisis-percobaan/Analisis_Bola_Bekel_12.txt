@@ -1,0 +1,103 @@
+
+============================================================
+    ANALISIS KOEFISIEN RESTITUSI - BOLA BEKEL
+============================================================
+
+PENGATURAN PENGUKURAN:
+  • Jenis Bola yang Diuji        : Bola Bekel
+  • Tinggi Sensor dari Lantai    : 35.0 cm
+  • Ambang Deteksi Pantulan      : 15.0 cm
+  • Selisih Tinggi Minimum       : 0.1 cm
+  • Jarak Minimum Pantulan       : 1 titik data
+  • Total Titik Data Terkumpul   : 72
+  • Durasi Pengukuran            : 11.31 detik
+  • Waktu Mulai dari             : 0.00 detik (direset setiap mulai)
+
+────────────────────────────────────────────────────────────
+HASIL DETEKSI PANTULAN:
+  • Jumlah Pantulan Terdeteksi   : 5
+  • Pantulan Valid (>= 15.0cm) : 5
+  • Trend Menurun (Natural)      : Ya
+  • Tinggi Pantulan (cm)         : 32.00, 31.00, 29.00, 25.00, 18.00
+  • Waktu Pantulan (s)           : 0.69, 5.20, 7.31, 9.11, 10.81
+  • Interval Waktu (s)           : 4.512, 2.114, 1.801, 1.700
+
+────────────────────────────────────────────────────────────
+PERHITUNGAN KOEFISIEN:
+  Pantulan 1 → 2 (VALID - MENURUN):
+    Tinggi: 32.00 cm → 31.00 cm
+    Penurunan: 1.00 cm
+    Koefisien: e = √(31.00/32.00) = 0.984
+    Interval Waktu: 4.512 detik
+    Energi Tersisa: 96.9%
+
+  Pantulan 2 → 3 (VALID - MENURUN):
+    Tinggi: 31.00 cm → 29.00 cm
+    Penurunan: 2.00 cm
+    Koefisien: e = √(29.00/31.00) = 0.967
+    Interval Waktu: 2.114 detik
+    Energi Tersisa: 93.5%
+
+  Pantulan 3 → 4 (VALID - MENURUN):
+    Tinggi: 29.00 cm → 25.00 cm
+    Penurunan: 4.00 cm
+    Koefisien: e = √(25.00/29.00) = 0.928
+    Interval Waktu: 1.801 detik
+    Energi Tersisa: 86.2%
+
+  Pantulan 4 → 5 (VALID - MENURUN):
+    Tinggi: 25.00 cm → 18.00 cm
+    Penurunan: 7.00 cm
+    Koefisien: e = √(18.00/25.00) = 0.849
+    Interval Waktu: 1.700 detik
+    Energi Tersisa: 72.0%
+
+────────────────────────────────────────────────────────────
+RINGKASAN STATISTIK:
+  • Pasangan Pantulan Valid      : 4 dari 4 total
+  • Koefisien Rata-rata (e)      : 0.9321
+  • Standar Deviasi              : 0.0523
+  • Koefisien Minimum            : 0.8485
+  • Koefisien Maksimum           : 0.9843
+  • Rentang Koefisien            : 0.1357
+
+ANALISIS ENERGI:
+  • Retensi Energi Rata-rata     : 86.88%
+  • Kehilangan Energi Rata-rata  : 13.12%
+  • Tingkat Disipasi Energi      : 13.1% per pantulan
+
+────────────────────────────────────────────────────────────
+KLASIFIKASI MATERIAL:
+  • Perkiraan Jenis Material     : Super Ball / Elastisitas Tinggi
+  • Kualitas Pantulan            : Sangat Baik
+  • Rating Elastisitas           : 93.2%
+
+────────────────────────────────────────────────────────────
+HASIL UNTUK BOLA BEKEL:
+  • Koefisien Restitusi          : 0.932
+  • Kualitas Pantulan            : Sangat Baik
+  • Retensi Energi               : 86.9%
+
+────────────────────────────────────────────────────────────
+PERBANDINGAN TEORITIS:
+  • Tumbukan Elastis Sempurna    : e = 1.000 (100% retensi energi)
+  • Bola Bekel Anda          : e = 0.932 (86.9% retensi energi)
+  • Tumbukan Inelastis Sempurna  : e = 0.000 (0% retensi energi)
+
+CATATAN FISIKA:
+  • Koefisien restitusi (e) mengukur elastisitas tumbukan
+  • e = 1: Tumbukan elastis sempurna (tanpa kehilangan energi)
+  • e = 0: Tumbukan inelastis sempurna (kehilangan energi maksimum)
+  • Material nyata umumnya memiliki 0.1 < e < 0.95
+  • Koefisien tinggi berarti karakteristik pantulan bola lebih baik
+
+PENGATURAN FILTER:
+  • Tinggi minimum pantulan: 15.0cm
+  • Selisih tinggi minimum: 0.1cm
+  • Filter trend menurun: AKTIF (mengabaikan puncak yang naik)
+  • Filter ini memastikan hanya pantulan natural yang dihitung
+
+============================================================
+Analisis Bola Bekel selesai pada: 2025-07-16 15:07:56
+Waktu pengukuran: 0.00 - 11.31 detik
+============================================================

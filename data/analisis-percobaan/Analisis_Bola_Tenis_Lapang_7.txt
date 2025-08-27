@@ -1,0 +1,89 @@
+
+============================================================
+    ANALISIS KOEFISIEN RESTITUSI - BOLA TENIS LAPANG
+============================================================
+
+PENGATURAN PENGUKURAN:
+  • Jenis Bola yang Diuji        : Bola Tenis Lapang
+  • Tinggi Sensor dari Lantai    : 35.0 cm
+  • Ambang Deteksi Pantulan      : 15.0 cm
+  • Selisih Tinggi Minimum       : 0.1 cm
+  • Jarak Minimum Pantulan       : 1 titik data
+  • Total Titik Data Terkumpul   : 29
+  • Durasi Pengukuran            : 5.11 detik
+  • Waktu Mulai dari             : 0.00 detik (direset setiap mulai)
+
+────────────────────────────────────────────────────────────
+HASIL DETEKSI PANTULAN:
+  • Jumlah Pantulan Terdeteksi   : 3
+  • Pantulan Valid (>= 15.0cm) : 3
+  • Trend Menurun (Natural)      : Ya
+  • Tinggi Pantulan (cm)         : 33.00, 26.00, 16.00
+  • Waktu Pantulan (s)           : 1.00, 2.90, 4.71
+  • Interval Waktu (s)           : 1.905, 1.800
+
+────────────────────────────────────────────────────────────
+PERHITUNGAN KOEFISIEN:
+  Pantulan 1 → 2 (VALID - MENURUN):
+    Tinggi: 33.00 cm → 26.00 cm
+    Penurunan: 7.00 cm
+    Koefisien: e = √(26.00/33.00) = 0.888
+    Interval Waktu: 1.905 detik
+    Energi Tersisa: 78.8%
+
+  Pantulan 2 → 3 (VALID - MENURUN):
+    Tinggi: 26.00 cm → 16.00 cm
+    Penurunan: 10.00 cm
+    Koefisien: e = √(16.00/26.00) = 0.784
+    Interval Waktu: 1.800 detik
+    Energi Tersisa: 61.5%
+
+────────────────────────────────────────────────────────────
+RINGKASAN STATISTIK:
+  • Pasangan Pantulan Valid      : 2 dari 2 total
+  • Koefisien Rata-rata (e)      : 0.8360
+  • Standar Deviasi              : 0.0516
+  • Koefisien Minimum            : 0.7845
+  • Koefisien Maksimum           : 0.8876
+  • Rentang Koefisien            : 0.1032
+
+ANALISIS ENERGI:
+  • Retensi Energi Rata-rata     : 69.90%
+  • Kehilangan Energi Rata-rata  : 30.10%
+  • Tingkat Disipasi Energi      : 30.1% per pantulan
+
+────────────────────────────────────────────────────────────
+KLASIFIKASI MATERIAL:
+  • Perkiraan Jenis Material     : Bola Karet / Elastisitas Baik
+  • Kualitas Pantulan            : Baik Sekali
+  • Rating Elastisitas           : 83.6%
+
+────────────────────────────────────────────────────────────
+HASIL UNTUK BOLA TENIS LAPANG:
+  • Koefisien Restitusi          : 0.836
+  • Kualitas Pantulan            : Baik Sekali
+  • Retensi Energi               : 69.9%
+
+────────────────────────────────────────────────────────────
+PERBANDINGAN TEORITIS:
+  • Tumbukan Elastis Sempurna    : e = 1.000 (100% retensi energi)
+  • Bola Tenis Lapang Anda          : e = 0.836 (69.9% retensi energi)
+  • Tumbukan Inelastis Sempurna  : e = 0.000 (0% retensi energi)
+
+CATATAN FISIKA:
+  • Koefisien restitusi (e) mengukur elastisitas tumbukan
+  • e = 1: Tumbukan elastis sempurna (tanpa kehilangan energi)
+  • e = 0: Tumbukan inelastis sempurna (kehilangan energi maksimum)
+  • Material nyata umumnya memiliki 0.1 < e < 0.95
+  • Koefisien tinggi berarti karakteristik pantulan bola lebih baik
+
+PENGATURAN FILTER:
+  • Tinggi minimum pantulan: 15.0cm
+  • Selisih tinggi minimum: 0.1cm
+  • Filter trend menurun: AKTIF (mengabaikan puncak yang naik)
+  • Filter ini memastikan hanya pantulan natural yang dihitung
+
+============================================================
+Analisis Bola Tenis Lapang selesai pada: 2025-07-16 15:34:12
+Waktu pengukuran: 0.00 - 5.11 detik
+============================================================

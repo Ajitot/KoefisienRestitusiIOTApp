@@ -1,0 +1,82 @@
+
+============================================================
+    ANALISIS KOEFISIEN RESTITUSI - BOLA PLASTIK
+============================================================
+
+PENGATURAN PENGUKURAN:
+  • Jenis Bola yang Diuji        : Bola Plastik
+  • Tinggi Sensor dari Lantai    : 35.0 cm
+  • Ambang Deteksi Pantulan      : 15.0 cm
+  • Selisih Tinggi Minimum       : 0.1 cm
+  • Jarak Minimum Pantulan       : 1 titik data
+  • Total Titik Data Terkumpul   : 31
+  • Durasi Pengukuran            : 11.73 detik
+  • Waktu Mulai dari             : 0.00 detik (direset setiap mulai)
+
+────────────────────────────────────────────────────────────
+HASIL DETEKSI PANTULAN:
+  • Jumlah Pantulan Terdeteksi   : 2
+  • Pantulan Valid (>= 15.0cm) : 2
+  • Trend Menurun (Natural)      : Ya
+  • Tinggi Pantulan (cm)         : 33.00, 19.00
+  • Waktu Pantulan (s)           : 2.31, 3.91
+  • Interval Waktu (s)           : 1.600
+
+────────────────────────────────────────────────────────────
+PERHITUNGAN KOEFISIEN:
+  Pantulan 1 → 2 (VALID - MENURUN):
+    Tinggi: 33.00 cm → 19.00 cm
+    Penurunan: 14.00 cm
+    Koefisien: e = √(19.00/33.00) = 0.759
+    Interval Waktu: 1.600 detik
+    Energi Tersisa: 57.6%
+
+────────────────────────────────────────────────────────────
+RINGKASAN STATISTIK:
+  • Pasangan Pantulan Valid      : 1 dari 1 total
+  • Koefisien Rata-rata (e)      : 0.7588
+  • Standar Deviasi              : 0.0000
+  • Koefisien Minimum            : 0.7588
+  • Koefisien Maksimum           : 0.7588
+  • Rentang Koefisien            : 0.0000
+
+ANALISIS ENERGI:
+  • Retensi Energi Rata-rata     : 57.58%
+  • Kehilangan Energi Rata-rata  : 42.42%
+  • Tingkat Disipasi Energi      : 42.4% per pantulan
+
+────────────────────────────────────────────────────────────
+KLASIFIKASI MATERIAL:
+  • Perkiraan Jenis Material     : Bola Tenis / Elastisitas Sedang
+  • Kualitas Pantulan            : Baik
+  • Rating Elastisitas           : 75.9%
+
+────────────────────────────────────────────────────────────
+HASIL UNTUK BOLA PLASTIK:
+  • Koefisien Restitusi          : 0.759
+  • Kualitas Pantulan            : Baik
+  • Retensi Energi               : 57.6%
+
+────────────────────────────────────────────────────────────
+PERBANDINGAN TEORITIS:
+  • Tumbukan Elastis Sempurna    : e = 1.000 (100% retensi energi)
+  • Bola Plastik Anda          : e = 0.759 (57.6% retensi energi)
+  • Tumbukan Inelastis Sempurna  : e = 0.000 (0% retensi energi)
+
+CATATAN FISIKA:
+  • Koefisien restitusi (e) mengukur elastisitas tumbukan
+  • e = 1: Tumbukan elastis sempurna (tanpa kehilangan energi)
+  • e = 0: Tumbukan inelastis sempurna (kehilangan energi maksimum)
+  • Material nyata umumnya memiliki 0.1 < e < 0.95
+  • Koefisien tinggi berarti karakteristik pantulan bola lebih baik
+
+PENGATURAN FILTER:
+  • Tinggi minimum pantulan: 15.0cm
+  • Selisih tinggi minimum: 0.1cm
+  • Filter trend menurun: AKTIF (mengabaikan puncak yang naik)
+  • Filter ini memastikan hanya pantulan natural yang dihitung
+
+============================================================
+Analisis Bola Plastik selesai pada: 2025-07-16 15:49:37
+Waktu pengukuran: 0.00 - 11.73 detik
+============================================================
