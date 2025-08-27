@@ -41,7 +41,7 @@ Aplikasi IoT untuk mengukur koefisien restitusi bola menggunakan sensor ultrason
 - [python](./python/) &mdash; Aplikasi Python GUI (main.py)
 - [data](./data/) &mdash; Data output yang diperoleh seluruh percobaan
 - [images](./images/) &mdash; Ilustrasi alat & skematik
-
+- [Modul Praktikum](./Modul-Praktikum-Koefisien-Restitusi.pdf) &mdash; Modul Praktikum Koefisien Restitusi
 
 ---
 ## Fitur Utama
@@ -223,7 +223,7 @@ flowchart TD
 | Grafik Ketinggian | Gambar (.png) | [Grafik Percobaan](/data/grafik-percobaan) | 100 (20x5 objek) | Grafik dari data ketinggian |
 | Analisis Percobaan | Text (.txt) | [Analisis Percobaan](/data/analisis-percobaan) | 100 (20x5 objek) | Analisis dari setiap percobaan |
 | Ringkasan Statistik | Excel, Gambar | [Ringkasan Statistik](/data/ringkasan=statistik) | 10 (2x5 objek) | Grafik dan tabel perhitungan standar deviasi dan koefisien restitusi seluruh percobaan pada setiap objek |
-| Tabel LaTeX | LaTeX (.tex) | [Tabel LaTeX](/data/tabel-latex) | 100 | Konversi data tabel excel ke latex untuk kebutuhan dokumen latex |
+| Tabel LaTeX | LaTeX (.tex) | [Tabel LaTeX](/data/tabel-latex) | 105 (20x5 objek + 5 tabel ringkasan)| Konversi data tabel excel ke latex untuk kebutuhan dokumen latex |
 
 ---
 
